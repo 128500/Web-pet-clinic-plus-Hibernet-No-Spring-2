@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+  <servlet>
+    <servlet-name>ClinicServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.ClinicServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ClinicServlet</servlet-name>
+    <url-pattern>/clinicservlet/</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>ViewUserServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.ViewUserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ViewUserServlet</servlet-name>
+    <url-pattern>/user/view/</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>CreateUserServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.CreateUserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CreateUserServlet</servlet-name>
+    <url-pattern>/user/create/</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AddInfoServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.AddInfoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddInfoServlet</servlet-name>
+    <url-pattern>/user/addinfo</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>EditUserServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.EditUserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditUserServlet</servlet-name>
+    <url-pattern>/user/edit</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DeleteUserServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.DeleteUserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteUserServlet</servlet-name>
+    <url-pattern>/user/delete</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>FindClientOrPetServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.FindClientOrPetServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FindClientOrPetServlet</servlet-name>
+    <url-pattern>/user/find/</url-pattern>
+  </servlet-mapping>
+
+</web-app>
+

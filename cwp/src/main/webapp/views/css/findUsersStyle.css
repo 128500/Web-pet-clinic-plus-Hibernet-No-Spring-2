@@ -1,0 +1,113 @@
+
+#header{
+    background-color: #BDDFAB;
+    height: 102px;
+    width: 100%;
+}
+
+#logo_img{
+    float: left;
+}
+
+#header_sign{
+    font-size: 60px;
+    width:400px ;
+    height: 102px;
+    margin-left: 140px;
+    padding-top: 15px;
+}
+
+#purple{
+    color: #d12ba9;
+    float: left;
+}
+
+#gray{
+    color: #998690;
+}
+
+#sidebar{
+    background-color: #bddfab;
+    min-height: 500px;
+    width: 25%;
+    margin-top: 5px;
+    float: left;
+}
+
+#sidebar a{
+    display: block;
+    margin: 10px 10px;
+    font-size: 24px;
+    transition: 0.2s linear;
+    -moz-transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+    -o-transition: 0.2s linear;
+}
+#sidebar a:hover{
+    padding-left: 15px;
+}
+
+#content{
+    background-color: #bddfab;
+    min-height: 500px;
+    width: calc(75% - 5px);
+    margin-left: 5px;
+    margin-top: 5px;
+    display: table;
+    float: left;
+}
+
+#footer{
+    background-color: #BDDFAB;
+    margin-top: 5px;
+    height: 150px;
+    width: 100%;
+    float: left;
+
+}
+a:link{
+    text-decoration: none;
+}
+
+a:visited{
+    text-decoratin: none;
+}
+
+a:hover{
+    text-decoration: none;
+}
+
+a{
+    color: #d12ba9;
+    font-size: 20px;
+}
+
+input{
+    background-color: #ddffcb;
+    font-size: 20px;
+    border: 1px solid #430505;
+    border-radius: 10px;
+    padding-left: 5px;
+    outline: 0 !important;
+}
+
+label{
+    font-size: 20px;
+    color: #430505;
+}
+
+.form_div{
+   text-align: center;
+}
+
+.form_input{
+    margin-top: 20px;
+}
+
+#submit_button{
+    background-color: #998690;
+}
+p{
+    font-size: 20px;
+    color: #430505;
+}

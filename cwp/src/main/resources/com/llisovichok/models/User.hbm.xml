@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.llisovichok.lessons.clinic">
+    <class name="Client" table="CLIENTS_T">
+        <meta attribute="class-description">
+            This class contains the user detail.
+        </meta>
+        <id name="id" type="java.lang.Integer" column="uid">
+            <generator class="sequence"/>
+        </id>
+        <discriminator column="type" type="java.lang.String"/>
+        <property name="firstName" column="first_name" type="string"/>
+        <property name="lastName" column="last_name" type="string"/>
+        <property name="address" column="address" type="string"/>
+        <property name="phoneNumber" column="phone" type="java.lang.Long"/>
+
+        <many-to-one name="pet" column="id_pet" unique="true" cascade="all" fetch="join"/>
+    </class>
+
+    <subclass name="com.llisovichok.models.User" extends="com.llisovichok.lessons.clinic.Client">
+        <!--property name="role" column="role" type="org.hibernate.type.EnumType"/-->
+    </subclass>
+
+    <class name="com.llisovichok.lessons.clinic.Pet" table="PETS_T">
+        <meta attribute="class-description">
+            This class contains the pet detail.
+        </meta>
+        <id name="id" type="java.lang.Integer" column="client_id">
+            <generator class="sequence"/>
+        </id>
+        <property name="name" column="nickname" type="string"/>
+        <property name="kind" column="kind" type="string"/>
+        <property name="age" column="age" type="java.lang.Integer"/>
+    </class>
+</hibernate-mapping>
