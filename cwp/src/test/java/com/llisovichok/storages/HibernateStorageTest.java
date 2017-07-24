@@ -92,11 +92,38 @@ public class HibernateStorageTest {
     public void edit() throws Exception {
         User u = new User("Test", "Test", "Test", 1201251455454L,
                 new Pet("Test", "test",3));
+        u.setRole(new Role("admin"));
+
         Integer number = H_STORAGE.add(u);
 
-        User user = new User("Gordon", "Dannison", "Test", 11111111111L,
-                new Pet("Harpy", "harpy", 5));
-        H_STORAGE.edit(number, user);
+
+        u = H_STORAGE.getUser(number);
+
+        assertTrue(u.getFirstName().equals("Test"));
+        assertTrue(u.getLastName().equals("Test"));
+        assertTrue(u.getAddress().equals("Test"));
+        assertTrue(u.getPhoneNumber() == 1201251455454L);
+        assertTrue(u.getPet().getName().equals("Test"));
+        assertTrue(u.getPet().getKind().equals("test"));
+        assertTrue(u.getPet().getAge() == 3);
+        assertTrue(u.getRole().getName().equals("admin"));
+
+        u.setFirstName("Gordon");
+        u.setLastName("Dannison");
+        u.setAddress("Test");
+        u.setPhoneNumber(11111111111L);
+        u.getPet().setName("Harpy");
+        u.getPet().setKind("harpy");
+        u.getPet().setAge(5);
+        u.setRole(new Role("user"));
+
+        Message m = new Message("first");
+        m.setUser(u);
+        Set<Message> messages = new HashSet<>();
+        messages.add(m);
+        u.setMessages(messages);
+
+        H_STORAGE.edit(number, u);
 
         User retrieved  = H_STORAGE.getUser(number);
         assertTrue(number.equals(retrieved.getId()));
@@ -107,6 +134,10 @@ public class HibernateStorageTest {
         assertTrue(retrieved.getPet().getName().equals("Harpy"));
         assertTrue(retrieved.getPet().getKind().equals("harpy"));
         assertTrue(retrieved.getPet().getAge() == 5);
+        assertTrue(retrieved.getRole().getName().equals("user"));
+        for(Message message : retrieved.getMessages()){
+            assertTrue(message.getText().equals("first"));
+        }
     }
 
     @Test
