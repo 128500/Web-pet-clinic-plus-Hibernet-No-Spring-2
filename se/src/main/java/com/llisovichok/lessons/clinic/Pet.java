@@ -94,9 +94,13 @@ public class Pet implements Serializable {
 
 
 	@Override
-	public String toString(){
-		
-		return	String.format("Имя питомца '%s' (%s)", this.name, this.kind);
+	public String toString() {
+		return "Pet{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", kind='" + kind + '\'' +
+				", age=" + age +
+				", detailedInfo=" + detailedInfo +
+				'}';
 	}
-				
 }

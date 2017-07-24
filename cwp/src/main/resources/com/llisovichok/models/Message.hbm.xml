@@ -4,14 +4,15 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="com.llisovichok.models">
-    <class name="Role" table="ROLE_T">
+    <class name="Message" table="MESSAGE_T">
         <meta attribute="class-description">
-            This class contains the user's role detail.
+            This class contains the user's message detail.
         </meta>
         <id name="id" type="java.lang.Integer" column="id">
             <generator class="sequence"/>
         </id>
-        <property name="name" column="name" type="string"/>
+        <property name="text" column="text" type="string"/>
+        <many-to-one name="user" column="user_id" class="com.llisovichok.models.User" cascade="all"/>
     </class>
 
 </hibernate-mapping>

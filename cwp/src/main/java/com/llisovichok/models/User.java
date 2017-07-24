@@ -1,10 +1,9 @@
 package com.llisovichok.models;
 
-import com.llisovichok.lessons.clinic.Client;
 import com.llisovichok.lessons.clinic.Pet;
 
-
 import java.io.Serializable;
+import java.util.Set;
 
 
 /**
@@ -12,7 +11,9 @@ import java.io.Serializable;
  */
 public class User extends com.llisovichok.lessons.clinic.Client implements Serializable {
 
-    private Role role;// not realized yet but will be
+    private Role role;
+
+    private Set<Message> messages;
 
     public User() {
         super();
@@ -49,6 +50,15 @@ public class User extends com.llisovichok.lessons.clinic.Client implements Seria
     public Role getRole() {
         return role;
     }
+
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
+    }
+
 
     @Override
     public String getFirstName() {
@@ -100,7 +110,11 @@ public class User extends com.llisovichok.lessons.clinic.Client implements Seria
         super.setPhoneNumber(phoneNumber);
     }
 
-    public String toString(){
-        return super.toString();
+    @Override
+    public String toString() {
+        return super.toString() +"User{" +
+                "role=" + role +
+                ", messages=" + messages +
+                '}';
     }
 }

@@ -21,7 +21,11 @@
     </class>
 
     <subclass name="com.llisovichok.models.User" extends="com.llisovichok.lessons.clinic.Client">
-        <!--property name="role" column="role" type="org.hibernate.type.EnumType"/-->
+        <many-to-one name="role" column="id_role" unique="true" cascade="all" fetch="join"/>
+        <set name="messages" table="message_t" lazy="false" inverse="true" cascade="all">
+            <key column="user_id" not-null="true"/>
+            <one-to-many class="com.llisovichok.models.Message"/>
+        </set>
     </subclass>
 
     <class name="com.llisovichok.lessons.clinic.Pet" table="PETS_T">

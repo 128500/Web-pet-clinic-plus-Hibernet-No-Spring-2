@@ -21,6 +21,7 @@
 
     <!-- List of XML mapping files -->
     <mapping resource="com/llisovichok/models/User.hbm.xml"/>
-    <!--mapping resource="com/llisovichok/lessons/clinic/Pet.hbm.xml"/-->
+    <mapping resource="com/llisovichok/models/Role.hbm.xml"/>
+    <mapping resource="com/llisovichok/models/Message.hbm.xml"/>
 </session-factory>
 </hibernate-configuration>

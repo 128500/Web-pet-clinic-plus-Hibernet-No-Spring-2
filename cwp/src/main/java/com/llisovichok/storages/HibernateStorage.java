@@ -57,7 +57,7 @@ public class HibernateStorage implements Storage {
 
         try (Session session = factory.openSession()) {
             tx = session.beginTransaction();
-            hiberUsers = session.createQuery("FROM com.llisovichok.models.User u INNER JOIN FETCH u.pet").list();
+            hiberUsers = session.createQuery("FROM com.llisovichok.models.User u INNER JOIN FETCH u.pet INNER JOIN FETCH u.role").list();
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
@@ -112,7 +112,8 @@ public class HibernateStorage implements Storage {
         User user = null;
         try (Session session = factory.openSession()) {
             tx = session.beginTransaction();
-            Query q = session.createQuery("FROM com.llisovichok.models.User u INNER JOIN FETCH u.pet" +
+            Query q = session.createQuery("FROM com.llisovichok.models.User u INNER JOIN FETCH u.pet " +
+                    "INNER JOIN FETCH u.role" +
                     " WHERE u.id =:id");
             q.setParameter("id", id);
             user = (User) q.list().get(0);
