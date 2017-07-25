@@ -4,6 +4,8 @@ import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.models.Message;
 import com.llisovichok.models.Role;
 import com.llisovichok.models.User;
+import junit.framework.AssertionFailedError;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,158 +19,157 @@ import static org.junit.Assert.*;
  */
 public class HibernateStorageTest {
     private final static HibernateStorage H_STORAGE = HibernateStorage.getInstance();
-    @Test
+    private final static Message m1 = new Message("first");
+    private final static Message m2 = new Message("second");
+    private final static Set<Message> messages = new HashSet<>();
 
+    private static User getUser2() {
+        User u = new User("Gordon", "Dannison", "Test", 11111111111L,
+                new Pet("Harpy", "harpy", 5));
+        u.setRole(new Role("admin"));
+        return u;
+    }
+
+    private static User getUser1() {
+        User u = new User("Test", "Test", "Test", 1201251455454L,
+                new Pet("Test", "test",3));
+        u.setRole(new Role ("user"));
+        return u;
+    }
+
+    private static boolean checkUser1(User user) throws AssertionFailedError {
+        assertTrue(user.getFirstName().equals("Test"));
+        assertTrue(user.getLastName().equals("Test"));
+        assertTrue(user.getAddress().equals("Test"));
+        assertTrue(user.getPhoneNumber() == 1201251455454L);
+        assertTrue(user.getPet().getName().equals("Test"));
+        assertTrue(user.getPet().getKind().equals("test"));
+        assertTrue(user.getPet().getAge() == 3);
+        assertTrue(user.getRole().getName().equals("user"));
+        for (Message m : user.getMessages()) {
+            assertTrue(m.getText().equals("first") || m.getText().equals("second"));
+        }
+
+        return true;
+    }
+
+    private static boolean checkChangedUser(User user) throws AssertionFailedError {
+        assertTrue(user.getFirstName().equals("Gordon"));
+        assertTrue(user.getLastName().equals("Dannison"));
+        assertTrue(user.getAddress().equals("Test"));
+        assertTrue(user.getPhoneNumber() == 11111111111L);
+        assertTrue(user.getPet().getName().equals("Harpy"));
+        assertTrue(user.getPet().getKind().equals("harpy"));
+        assertTrue(user.getPet().getAge() == 5);
+        assertTrue(user.getRole().getName().equals("admin"));
+        for (Message m : user.getMessages()) {
+            assertTrue(m.getText().equals("first") || m.getText().equals("second"));
+        }
+
+        return true;
+    }
+
+    @Test
     public void values() throws Exception {
         for(int i = 0; i < 10; i++){
-            User u = new User("Test", "Test", "Test", 1201251455454L, new Pet("Test", "test",3));
-            u.setRole(new Role("user"));
-            Message m1 = new Message();
-            m1.setText("first");
-            Message m2 = new Message();
-            m2.setText("second");
-            final int id = H_STORAGE.add(u);
-            u = H_STORAGE.getUser(id);
-            m1.setUser(u);
-            m2.setUser(u);
-            Set<Message> messages = new HashSet<>();
+
+            User user = getUser1();
+
+            final int id = H_STORAGE.add(user);
+            User retrieved  = H_STORAGE.getUser(id);
+
+            m1.setUser(retrieved);
+            m2.setUser(retrieved);
+
             messages.add(m1);
             messages.add(m2);
-            u.setMessages(messages);
-            H_STORAGE.edit(id, u);
+            retrieved.setMessages(messages);
+
+            H_STORAGE.edit(id, retrieved);
         }
 
         ArrayList<User> users = (ArrayList<User>) H_STORAGE.values();
         assertTrue(users.size() == 10);
-        for(User user : users){
-            assertTrue(user.getFirstName().equals("Test"));
-            assertTrue(user.getLastName().equals("Test"));
-            assertTrue(user.getAddress().equals("Test"));
-            assertTrue(user.getPhoneNumber() == 1201251455454L);
-            assertTrue(user.getPet().getName().equals("Test"));
-            assertTrue(user.getPet().getKind().equals("test"));
-            assertTrue(user.getPet().getAge() == 3);
-            assertTrue(user.getRole().getName().equals("user"));
-            for(Message m : user.getMessages()){
-                assertTrue(m.getText().equals("first") || m.getText().equals("second"));
-            }
+        for(User u : users){
+            assertEquals(true, checkUser1(u));
         }
     }
 
     @Test
     public void add() throws Exception {
-        User user = new User("Gordon", "Dannison", "Test", 11111111111L,
-                new Pet("Harpy", "harpy", 5));
-        user.setRole(new Role("admin"));
-        int number;
-        number  = H_STORAGE.add(user);
-        System.out.println("Number  = " + number);
-        assertTrue(number > 0);
 
-        user = H_STORAGE.getUser(number);
-        Message m = new Message();
-        m.setText("First message");
-        m.setUser(user);
-        HashSet<Message> messages = new HashSet<>();
-        messages.add(m);
-        user.setMessages(messages);
-        H_STORAGE.edit(number, user);
+        Integer id  = H_STORAGE.add(getUser1());
 
-        User retrieved  = H_STORAGE.getUser(number);
-        assertTrue(retrieved.getFirstName().equals("Gordon"));
-        assertTrue(retrieved.getLastName().equals("Dannison"));
-        assertTrue(retrieved.getAddress().equals("Test"));
-        assertTrue(retrieved.getPhoneNumber() == 11111111111L);
-        assertTrue(retrieved.getPet().getName().equals("Harpy"));
-        assertTrue(retrieved.getPet().getKind().equals("harpy"));
-        assertTrue(retrieved.getPet().getAge() == 5);
-        assertTrue(retrieved.getRole().getName().equals("admin"));
-        for(Message message : user.getMessages()){
-            assertTrue(message.getText().equals("First message"));
-        }
+        assertTrue(id > 0);
+
+        User retrieved  = H_STORAGE.getUser(id);
+
+        m1.setUser(retrieved);
+        m2.setUser(retrieved);
+
+        messages.add(m1);
+        messages.add(m2);
+        retrieved.setMessages(messages);
+
+        H_STORAGE.edit(id, retrieved);
+
+        retrieved  = H_STORAGE.getUser(id);
+
+        assertEquals(true, checkUser1(retrieved));
     }
 
     @Test
     public void edit() throws Exception {
-        User u = new User("Test", "Test", "Test", 1201251455454L,
-                new Pet("Test", "test",3));
-        u.setRole(new Role("admin"));
 
-        Integer number = H_STORAGE.add(u);
+        Integer id = H_STORAGE.add(getUser1());
 
+        User retrieved = H_STORAGE.getUser(id);
 
-        u = H_STORAGE.getUser(number);
+        assertTrue(retrieved.getMessages().isEmpty());
+        assertEquals(true, checkUser1(retrieved));
 
-        assertTrue(u.getFirstName().equals("Test"));
-        assertTrue(u.getLastName().equals("Test"));
-        assertTrue(u.getAddress().equals("Test"));
-        assertTrue(u.getPhoneNumber() == 1201251455454L);
-        assertTrue(u.getPet().getName().equals("Test"));
-        assertTrue(u.getPet().getKind().equals("test"));
-        assertTrue(u.getPet().getAge() == 3);
-        assertTrue(u.getRole().getName().equals("admin"));
+        retrieved.setFirstName("Gordon");
+        retrieved.setLastName("Dannison");
+        retrieved.setAddress("Test");
+        retrieved.setPhoneNumber(11111111111L);
+        retrieved.getPet().setName("Harpy");
+        retrieved.getPet().setKind("harpy");
+        retrieved.getPet().setAge(5);
+        retrieved.setRole(new Role("admin"));
 
-        u.setFirstName("Gordon");
-        u.setLastName("Dannison");
-        u.setAddress("Test");
-        u.setPhoneNumber(11111111111L);
-        u.getPet().setName("Harpy");
-        u.getPet().setKind("harpy");
-        u.getPet().setAge(5);
-        u.setRole(new Role("user"));
+        m1.setUser(retrieved);
+        m2.setUser(retrieved);
 
-        Message m = new Message("first");
-        m.setUser(u);
-        Set<Message> messages = new HashSet<>();
-        messages.add(m);
-        u.setMessages(messages);
+        messages.add(m1);
+        messages.add(m2);
+        retrieved.setMessages(messages);
 
-        H_STORAGE.edit(number, u);
+        H_STORAGE.edit(id, retrieved);
 
-        User retrieved  = H_STORAGE.getUser(number);
-        assertTrue(number.equals(retrieved.getId()));
-        assertTrue(retrieved.getFirstName().equals("Gordon"));
-        assertTrue(retrieved.getLastName().equals("Dannison"));
-        assertTrue(retrieved.getAddress().equals("Test"));
-        assertTrue(retrieved.getPhoneNumber() == 11111111111L);
-        assertTrue(retrieved.getPet().getName().equals("Harpy"));
-        assertTrue(retrieved.getPet().getKind().equals("harpy"));
-        assertTrue(retrieved.getPet().getAge() == 5);
-        assertTrue(retrieved.getRole().getName().equals("user"));
-        for(Message message : retrieved.getMessages()){
-            assertTrue(message.getText().equals("first"));
-        }
+        retrieved  = H_STORAGE.getUser(id);
+        assertEquals(true, checkChangedUser(retrieved));
     }
 
     @Test
     public void getUser() throws Exception {
-        User user1  = new User("Test", "Test", "Test", 1201251455454L,
-                new Pet("Test", "test",3));
-        Integer number1 = H_STORAGE.add(user1);
 
-        User user2 = new User("Gordon", "Dannison", "Test", 11111111111L,
-                new Pet("Harpy", "harpy", 5));
-        Integer number2 = H_STORAGE.add(user2);
+        Integer id = H_STORAGE.add(getUser2());
 
-        User retrieved2  = H_STORAGE.getUser(number2);
-        assertTrue(number2.equals(retrieved2.getId()));
-        assertTrue(retrieved2.getFirstName().equals("Gordon"));
-        assertTrue(retrieved2.getLastName().equals("Dannison"));
-        assertTrue(retrieved2.getAddress().equals("Test"));
-        assertTrue(retrieved2.getPhoneNumber() == 11111111111L);
-        assertTrue(retrieved2.getPet().getName().equals("Harpy"));
-        assertTrue(retrieved2.getPet().getKind().equals("harpy"));
-        assertTrue(retrieved2.getPet().getAge() == 5);
+        User retrieved  = H_STORAGE.getUser(id);
 
-        User retrieved1  = H_STORAGE.getUser(number1);
-        assertTrue(number1.equals(retrieved1.getId()));
-        assertTrue(retrieved1.getFirstName().equals("Test"));
-        assertTrue(retrieved1.getLastName().equals("Test"));
-        assertTrue(retrieved1.getAddress().equals("Test"));
-        assertTrue(retrieved1.getPhoneNumber() == 1201251455454L);
-        assertTrue(retrieved1.getPet().getName().equals("Test"));
-        assertTrue(retrieved1.getPet().getKind().equals("test"));
-        assertTrue(retrieved1.getPet().getAge() == 3);
+        m1.setUser(retrieved);
+        m2.setUser(retrieved);
+
+        messages.add(m1);
+        messages.add(m2);
+        retrieved.setMessages(messages);
+
+        H_STORAGE.edit(id, retrieved);
+
+        retrieved  = H_STORAGE.getUser(id);
+
+        assertEquals(true, checkChangedUser(retrieved));
+
     }
 
     @Test
@@ -176,25 +177,24 @@ public class HibernateStorageTest {
 
         ArrayList<User> users_before = (ArrayList<User>)H_STORAGE.values();
 
-        User user1  = new User("Test", "Test", "Test", 1201251455454L,
-                new Pet("Test", "test",3));
-        Integer number1 = H_STORAGE.add(user1);
+        Integer id1 = H_STORAGE.add(getUser1());
+        Integer id2 = H_STORAGE.add(getUser2());
 
-        User user2 = new User("Gordon", "Dannison", "Test", 11111111111L,
-                new Pet("Harpy", "harpy", 5));
-        Integer number2 = H_STORAGE.add(user2);
-
-        H_STORAGE.removeUser(number1);
-        H_STORAGE.removeUser(number2);
-        ArrayList<User> users = (ArrayList<User>)H_STORAGE.values();
-        assertTrue(users.size() == users_before.size());
+        ArrayList<User> users_current = (ArrayList<User>)H_STORAGE.values();
+        assertTrue(users_current.size() > users_before.size());
+        H_STORAGE.removeUser(id1);
+        H_STORAGE.removeUser(id2);
+        ArrayList<User> users_after = (ArrayList<User>)H_STORAGE.values();
+        assertTrue(users_after.size() == users_before.size());
 
     }
 
+    @Ignore
     @Test
     public void addPhoto() throws Exception {
     }
 
+    @Ignore
     @Test
     public void findUsers() throws Exception {
     }
