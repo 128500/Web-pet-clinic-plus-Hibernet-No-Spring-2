@@ -1,7 +1,6 @@
 package com.llisovichok.servlets;
 
-import com.llisovichok.storages.JdbcStorage;
-import sun.misc.IOUtils;
+import com.llisovichok.storages.HibernateStorage;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,11 +22,13 @@ import java.io.*;
 
 public class AddInfoServlet extends HttpServlet{
 
-    final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    //final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    private final static HibernateStorage HIBERNATE_STORAGE = HibernateStorage.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("user", JDBC_STORAGE.getUser(Integer.valueOf(req.getParameter("id"))));
+        //req.setAttribute("user", JDBC_STORAGE.getUser(Integer.valueOf(req.getParameter("id"))));
+        req.setAttribute("user", HIBERNATE_STORAGE.getUser(Integer.valueOf(req.getParameter("id"))));
         RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/AddInfo.jsp");
         dispatcher.forward(req, resp);
     }
@@ -52,7 +53,8 @@ public class AddInfoServlet extends HttpServlet{
             byte[] buffer = baos.toByteArray();
             ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
 
-            JDBC_STORAGE.addPhoto(id, bais, byteArraySize);
+            //JDBC_STORAGE.addPhoto(id, bais, byteArraySize);
+            HIBERNATE_STORAGE.addPhoto(id, bais, byteArraySize);
 
             bais.close();
 
@@ -67,6 +69,7 @@ public class AddInfoServlet extends HttpServlet{
     @Override
     public void destroy(){
         super.destroy();
-        JDBC_STORAGE.close();
+        //JDBC_STORAGE.close();
+        HIBERNATE_STORAGE.close();
     }
 }

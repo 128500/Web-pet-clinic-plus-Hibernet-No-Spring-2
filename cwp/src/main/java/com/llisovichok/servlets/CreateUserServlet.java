@@ -1,6 +1,7 @@
 package com.llisovichok.servlets;
 
 import com.llisovichok.lessons.clinic.Pet;
+import com.llisovichok.models.Role;
 import com.llisovichok.models.User;
 import com.llisovichok.storages.HibernateStorage;
 
@@ -19,7 +20,6 @@ import java.util.Map;
 public class CreateUserServlet extends HttpServlet {
 
     //final static UserData USER_DATA = UserData.getInstance();
-
     //final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
 
     private final static HibernateStorage HIBERNATE_STORAGE = HibernateStorage.getInstance();
@@ -46,7 +46,8 @@ public class CreateUserServlet extends HttpServlet {
             int length = entry.getValue().length;
 
             for(int i = 0; i < length; i++){
-                if(!isNotNull(entry.getValue()[i]) || !isNotEmpty(entry.getValue()[i].trim())) wrongParameters.add(entry.getKey().toUpperCase());
+                if(!isNotNull(entry.getValue()[i]) || !isNotEmpty(entry.getValue()[i].trim()))
+                    wrongParameters.add(entry.getKey().toUpperCase());
             }
         }
         return wrongParameters;
@@ -70,18 +71,11 @@ public class CreateUserServlet extends HttpServlet {
         String clientAddress = req.getParameter("address");
         long  clientPhoneNumber = Long.parseLong(req.getParameter("phone number"));
 
-        //Pet pet = createChosenPet(req);
-        //return new User(clientFirstName, clientLastName, clientAddress, clientPhoneNumber, pet);
-        Pet hiberPet= createChosenPet(req);
-        return new User(clientFirstName, clientLastName, clientAddress,
-                clientPhoneNumber, hiberPet);
-    }
-
-    /**User createUserWithId(HttpServletRequest req, Integer id)throws IOException{
-        User user = createUser(req);
-        user.setId(id);
+        Pet pet = createChosenPet(req);
+        User user = new User(clientFirstName, clientLastName, clientAddress, clientPhoneNumber, pet);
+        user.setRole(new Role("user"));
         return user;
-    }*/
+    }
 
     private Pet createChosenPet(HttpServletRequest req){
 
@@ -89,7 +83,6 @@ public class CreateUserServlet extends HttpServlet {
         String petName = req.getParameter("pet name");
         int petAge = Integer.parseInt(req.getParameter("pet age"));
 
-        //return new Pet(petName, petKind, petAge);
         return new Pet(petName, petKind, petAge);
     }
 
@@ -113,5 +106,6 @@ public class CreateUserServlet extends HttpServlet {
     public void destroy(){
         super.destroy();
         //JDBC_STORAGE.close();
+        HIBERNATE_STORAGE.close();
     }
 }

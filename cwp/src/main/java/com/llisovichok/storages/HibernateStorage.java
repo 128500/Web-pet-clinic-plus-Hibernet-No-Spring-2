@@ -176,32 +176,22 @@ public class HibernateStorage implements Storage {
 
             if(first) {
                 disjunction.add(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE));
-                //crit.add(Restrictions.or(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE)));
             }
 
             if(last) {
                 disjunction.add(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE));
-                //crit.add(Restrictions.or(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE)));
             }
 
             if(pet) {
-                /**Disjunction disj = Restrictions.disjunction();
-                disj.add(Restrictions.ilike(Pet.getName(), input, MatchMode.ANYWHERE))
-                criteria.createAlias("pet", "pet", JoinType.INNER_JOIN)
-                        .add(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));*/
-                //crit.add(Restrictions.or(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE)));
-                disjunction.add(Restrictions.or(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE)));
+                disjunction.add(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));
             }
 
             if(!first && !last && !pet){
                 disjunction.add(Restrictions.ilike("user.address", input, MatchMode.ANYWHERE));
-                //crit.add(Restrictions.or(Restrictions.ilike("address", input, MatchMode.ANYWHERE)));
             }
 
-            /**if(disjunction.conditions() != null && disjunction.conditions().iterator().hasNext()){
-                criteria.add(disjunction);
-            }
-            users = criteria.list();*/
+            //users = criteria.list();
+
             crit.add(disjunction);
             users = crit.getExecutableCriteria(session).addOrder(Order.asc("id")).list();
 
@@ -216,5 +206,6 @@ public class HibernateStorage implements Storage {
 
     @Override
     public void close() {
+        factory.close();
     }
 }

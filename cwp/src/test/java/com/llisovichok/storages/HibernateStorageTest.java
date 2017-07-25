@@ -23,17 +23,17 @@ public class HibernateStorageTest {
     private final static Message m2 = new Message("second");
     private final static Set<Message> messages = new HashSet<>();
 
-    private static User getUser2() {
-        User u = new User("Gordon", "Dannison", "Test", 11111111111L,
-                new Pet("Harpy", "harpy", 5));
-        u.setRole(new Role("admin"));
-        return u;
-    }
-
     private static User getUser1() {
         User u = new User("Test", "Test", "Test", 1201251455454L,
                 new Pet("Test", "test",3));
         u.setRole(new Role ("user"));
+        return u;
+    }
+
+    private static User getUser2() {
+        User u = new User("Gordon", "Dannison", "Test", 11111111111L,
+                new Pet("Harpy", "harpy", 5));
+        u.setRole(new Role("admin"));
         return u;
     }
 
@@ -191,12 +191,9 @@ public class HibernateStorageTest {
 
     @Ignore
     @Test
-    public void addPhoto() throws Exception {
-    }
-
-    @Ignore
-    @Test
     public void findUsers() throws Exception {
+
+
     }
 
 }
