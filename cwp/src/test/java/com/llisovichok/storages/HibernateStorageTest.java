@@ -5,7 +5,7 @@ import com.llisovichok.models.Message;
 import com.llisovichok.models.Role;
 import com.llisovichok.models.User;
 import junit.framework.AssertionFailedError;
-import org.junit.Ignore;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -189,7 +189,6 @@ public class HibernateStorageTest {
 
     }
 
-    @Ignore
     @Test
     public void findUsers() throws Exception {
 
