@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * TODO add description to addPhoto method
+ *
  * Created by KUDIN ALEKSANDR on 01.07.2017.
  */
 public class HibernateStorage implements Storage {
@@ -39,16 +41,15 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    public static SessionFactory getFactory() {
-        return factory;
-    }
-
-
     public static HibernateStorage getInstance() {
         return INSTANCE;
     }
 
 
+    /**
+     * Retrieves the data of all users from the database
+     * @return collection of User.class objects
+     */
     @Override
     public Collection<User> values() {
 
@@ -68,6 +69,11 @@ public class HibernateStorage implements Storage {
         else return Collections.emptyList();
     }
 
+    /**
+     * Adds new user into database
+     * @param user - an object of User.class that must be saved
+     * @return id of saved user
+     */
     @Override
     public int add(User user) {
         Transaction tx = null;
@@ -85,6 +91,11 @@ public class HibernateStorage implements Storage {
         throw new IllegalStateException("Couldn't save data into database!");
     }
 
+    /**
+     * Edits current data of the user
+     * @param id - user's id number
+     * @param user an object of User.class that must be saved
+     */
     @Override
     public void edit(Integer id, User user) {
 
@@ -105,6 +116,11 @@ public class HibernateStorage implements Storage {
         return null;
     }
 
+    /**
+     * Retrieves user from the database
+     * @param id - user's id number assigned in database
+     * @return an object of User.class
+     */
     @Override
     public User getUser(Integer id) {
 
@@ -128,6 +144,10 @@ public class HibernateStorage implements Storage {
         else throw new IllegalStateException("Couldn't find data with such 'id'");
     }
 
+    /**
+     * Deletes user from database
+     * @param userId - user's id number
+     */
     @Override
     public void removeUser(Integer userId) {
 
@@ -144,6 +164,7 @@ public class HibernateStorage implements Storage {
         }
     }
 
+    /*Not implemented here*/
     @Override
     public void add(Integer id, User user) {
 
@@ -154,46 +175,47 @@ public class HibernateStorage implements Storage {
 
     }
 
+    /**
+     * Searches for matches in users' first names, last names,
+     * pet's names or addresses according to inputted  value
+     * @param input inputted value for searching
+     * @param lookInFirstName marker for searching of matches in first name
+     * @param lookInLastName marker for searching of matches in last name
+     * @param lookInPetName marker for searching of matches in pet's name
+     * @return results of searching as a collection of User.class objects
+     */
     @Override
-    public Collection<User> findUsers(String input, boolean lookInFirstName, boolean lookInLastName, boolean lookInPetName) {
+    public Collection<User> findUsers(String input, boolean lookInFirstName,
+                                      boolean lookInLastName, boolean lookInPetName) {
 
         Collection<User> users = null;
         Transaction tx = null;
         try(Session session = factory.openSession()){
 
-            boolean first = lookInFirstName; //should we look coincidences in first names
-            boolean last = lookInLastName; //should we look coincidences in last names
-            boolean pet = lookInPetName; //should we look coincidences in pet's names
-
             tx = session.beginTransaction();
-            //Criteria criteria = session.createCriteria(com.llisovichok.models.User.class, "user");
-            //Disjunction disjunction = Restrictions.disjunction();// to set disjunction mode e.g. 'first' OR 'last' OR 'petName'
+            Criteria criteria = session.createCriteria(com.llisovichok.models.User.class, "user");
+            criteria.createAlias("user.pet", "pet");
 
-            DetachedCriteria crit = DetachedCriteria.forClass(com.llisovichok.models.User.class, "user");
-            crit.createAlias("user.pet", "pet");
-            Disjunction disjunction = Restrictions.disjunction();// to set disjunction mode e.g. 'first' OR 'last' OR 'petName'
+            Disjunction disjunction = Restrictions.disjunction();// to set disjunction mode e.g.'first' OR 'last' OR 'petName'
 
-
-            if(first) {
+            if(lookInFirstName) {
                 disjunction.add(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE));
             }
 
-            if(last) {
+            if(lookInLastName) {
                 disjunction.add(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE));
             }
 
-            if(pet) {
+            if(lookInPetName) {
                 disjunction.add(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));
             }
 
-            if(!first && !last && !pet){
+            if(!lookInFirstName && !lookInLastName && !lookInPetName){
                 disjunction.add(Restrictions.ilike("user.address", input, MatchMode.ANYWHERE));
             }
 
-            //users = criteria.list();
-
-            crit.add(disjunction);
-            users = crit.getExecutableCriteria(session).addOrder(Order.asc("id")).list();
+            criteria.add(disjunction);
+            users = criteria.addOrder(Order.asc("id")).list();
 
             tx.commit();
         } catch(HibernateException e){
@@ -204,6 +226,9 @@ public class HibernateStorage implements Storage {
         else return Collections.emptyList();
     }
 
+    /**
+     * Closes current session factory
+     */
     @Override
     public void close() {
         factory.close();
