@@ -191,8 +191,104 @@ public class HibernateStorageTest {
 
     @Test
     public void findUsers() throws Exception {
+        /**ArrayList<User> users = (ArrayList<User>) H_STORAGE.values();
+        for(User u : users){
+            H_STORAGE.removeUser(u.getId());
+        }*/
+        User gordon = getUser1();
+        gordon.setFirstName("Sam");
+        gordon.setLastName("Edison");
+        gordon.getPet().setName("Darko");
+        gordon.setAddress("Fifth av.");
+
+        User don = getUser1();
+        don.setFirstName("Sam");
+        don.setLastName("Ramsy");
+        don.getPet().setName("Darko");
+        don.setAddress("Fifth av.");
+
+        User bob = getUser1();
+        bob.setFirstName("Bob");
+        bob.setLastName("Ramsy");
+        bob.getPet().setName("Diana");
+        bob.setAddress("Passadina st.");
+
+        H_STORAGE.add(gordon);
+        H_STORAGE.add(don);
+        H_STORAGE.add(bob);
+
+        /* Looking in users' first names */
+        /* Two matches found*/
+        ArrayList<User> users = (ArrayList<User>) H_STORAGE.findUsers("sam", true, false, false);
+        assertTrue(users.size() == 2);
+        for(User u : users){
+            assertTrue(u.getFirstName().equals("Sam"));
+        }
+
+        /* One match found*/
+        users = (ArrayList<User>) H_STORAGE.findUsers("Bob", true, false, false);
+        assertTrue(users.size() == 1);
+        assertTrue(users.get(0).getFirstName().equals("Bob"));
+
+        /* No matches found*/
+        users = (ArrayList<User>) H_STORAGE.findUsers("111", true, false, false);
+        assertTrue(users.size() == 0);
 
 
+        /* Looking in users' last names*/
+        /* Two matches found*/
+        users = (ArrayList<User>) H_STORAGE.findUsers("Ramsy", false, true, false);
+        assertTrue(users.size() == 2);
+        for(User u : users){
+            assertTrue(u.getLastName().equals("Ramsy"));
+        }
+
+        /* One match found*/
+        users = (ArrayList<User>) H_STORAGE.findUsers("Edison", false, true, false);
+        assertTrue(users.size() == 1);
+        assertTrue(users.get(0).getLastName().equals("Edison"));
+
+        /* No matches found*/
+        users = (ArrayList<User>) H_STORAGE.findUsers("111", false, true, false);
+        assertTrue(users.size() == 0);
+
+
+
+        /* Looking in pets' names*/
+        /* Two matches found*/
+        users = (ArrayList<User>) H_STORAGE.findUsers("Darko", false, false, true);
+        assertTrue(users.size() == 2);
+        for(User u : users){
+            assertTrue(u.getPet().getName().equals("Darko"));
+        }
+
+        /* One match found*/
+        users = (ArrayList<User>) H_STORAGE.findUsers("Diana", false, false, true);
+        assertTrue(users.size() == 1);
+        assertTrue(users.get(0).getPet().getName().equals("Diana"));
+
+        /* No matches found*/
+        users = (ArrayList<User>) H_STORAGE.findUsers("111", false, false, true);
+        assertTrue(users.size() == 0);
+
+
+
+        /* Looking in addresses */
+        /* Two matches found */
+        users = (ArrayList<User>) H_STORAGE.findUsers("Fifth av.", false, false, false);
+        assertTrue(users.size() == 2);
+        for(User u : users){
+            assertTrue(u.getAddress().equals("Fifth av."));
+        }
+
+        /* One match found */
+        users = (ArrayList<User>) H_STORAGE.findUsers("Passadina st.", false, false, false);
+        assertTrue(users.size() == 1);
+        assertTrue(users.get(0).getAddress().equals("Passadina st."));
+
+        /* No matches found */
+        users = (ArrayList<User>) H_STORAGE.findUsers("111", false, false, false);
+        assertTrue(users.size() == 0);
     }
 
 }
