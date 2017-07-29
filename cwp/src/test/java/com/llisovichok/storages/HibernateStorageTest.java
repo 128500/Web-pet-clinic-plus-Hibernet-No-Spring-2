@@ -23,21 +23,21 @@ public class HibernateStorageTest {
     private final static Message m2 = new Message("second");
     private final static Set<Message> messages = new HashSet<>();
 
-    private static User getUser1() {
+    private User createUser1() {
         User u = new User("Test", "Test", "Test", 1201251455454L,
                 new Pet("Test", "test",3));
         u.setRole(new Role ("user"));
         return u;
     }
 
-    private static User getUser2() {
+    private User createUser2() {
         User u = new User("Gordon", "Dannison", "Test", 11111111111L,
                 new Pet("Harpy", "harpy", 5));
         u.setRole(new Role("admin"));
         return u;
     }
 
-    private static boolean checkUser1(User user) throws AssertionFailedError {
+    private boolean checkUser1(User user) throws AssertionFailedError {
         assertTrue(user.getFirstName().equals("Test"));
         assertTrue(user.getLastName().equals("Test"));
         assertTrue(user.getAddress().equals("Test"));
@@ -53,7 +53,7 @@ public class HibernateStorageTest {
         return true;
     }
 
-    private static boolean checkChangedUser(User user) throws AssertionFailedError {
+    private boolean checkChangedUser(User user) throws AssertionFailedError {
         assertTrue(user.getFirstName().equals("Gordon"));
         assertTrue(user.getLastName().equals("Dannison"));
         assertTrue(user.getAddress().equals("Test"));
@@ -73,7 +73,7 @@ public class HibernateStorageTest {
     public void values() throws Exception {
         for(int i = 0; i < 10; i++){
 
-            User user = getUser1();
+            User user = createUser1();
 
             final int id = H_STORAGE.add(user);
             User retrieved  = H_STORAGE.getUser(id);
@@ -98,7 +98,7 @@ public class HibernateStorageTest {
     @Test
     public void add() throws Exception {
 
-        Integer id  = H_STORAGE.add(getUser1());
+        Integer id  = H_STORAGE.add(this.createUser1());
         System.out.println("Id : " + id);
         assertTrue(id > 0);
 
@@ -115,18 +115,18 @@ public class HibernateStorageTest {
 
         retrieved  = H_STORAGE.getUser(id);
 
-        assertEquals(true, checkUser1(retrieved));
+        assertEquals(true, this.checkUser1(retrieved));
     }
 
     @Test
     public void edit() throws Exception {
 
-        Integer id = H_STORAGE.add(getUser1());
+        Integer id = H_STORAGE.add(this.createUser1());
 
         User retrieved = H_STORAGE.getUser(id);
 
         assertTrue(retrieved.getMessages().isEmpty());
-        assertEquals(true, checkUser1(retrieved));
+        assertEquals(true, this.checkUser1(retrieved));
 
         retrieved.setFirstName("Gordon");
         retrieved.setLastName("Dannison");
@@ -153,7 +153,7 @@ public class HibernateStorageTest {
     @Test
     public void getUser() throws Exception {
 
-        Integer id = H_STORAGE.add(getUser2());
+        Integer id = H_STORAGE.add(this.createUser2());
 
         User retrieved  = H_STORAGE.getUser(id);
 
@@ -177,8 +177,8 @@ public class HibernateStorageTest {
 
         ArrayList<User> users_before = (ArrayList<User>)H_STORAGE.values();
 
-        Integer id1 = H_STORAGE.add(getUser1());
-        Integer id2 = H_STORAGE.add(getUser2());
+        Integer id1 = H_STORAGE.add(createUser1());
+        Integer id2 = H_STORAGE.add(createUser2());
 
         ArrayList<User> users_current = (ArrayList<User>)H_STORAGE.values();
         assertTrue(users_current.size() > users_before.size());
@@ -195,19 +195,19 @@ public class HibernateStorageTest {
         for(User u : users){
             H_STORAGE.removeUser(u.getId());
         }*/
-        User gordon = getUser1();
+        User gordon = createUser1();
         gordon.setFirstName("Sam");
         gordon.setLastName("Edison");
         gordon.getPet().setName("Darko");
         gordon.setAddress("Fifth av.");
 
-        User don = getUser1();
+        User don = createUser1();
         don.setFirstName("Sam");
         don.setLastName("Ramsy");
         don.getPet().setName("Darko");
         don.setAddress("Fifth av.");
 
-        User bob = getUser1();
+        User bob = createUser1();
         bob.setFirstName("Bob");
         bob.setLastName("Ramsy");
         bob.getPet().setName("Diana");

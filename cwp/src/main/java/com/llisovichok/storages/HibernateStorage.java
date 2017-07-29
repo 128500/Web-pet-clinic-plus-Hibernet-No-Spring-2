@@ -51,14 +51,15 @@ public class HibernateStorage implements Storage {
 
     private <T> T transaction(Command<T> command){
         Transaction tx = null;
+        T t;
         try(Session session = factory.openSession()){
-                session.beginTransaction();
-                return command.execute(session);
+                tx = session.beginTransaction();
+                t = command.execute(session);
+                tx.commit();
+                return t; //note (!) that return statement cannot be placed before committing the transaction
         } catch (HibernateException e){
             if(tx != null) tx.rollback();
             e.printStackTrace();
-        } finally{
-            if (tx!= null)tx.commit();
         }
         throw new IllegalStateException("Some problem occurred! Couldn't execute the process!");
     }
@@ -71,20 +72,9 @@ public class HibernateStorage implements Storage {
     @Override
     public Collection<User> values() {
 
-        Transaction tx = null;
-        List<User> hiberUsers = null;
-
-        try (Session session = factory.openSession()) {
-            tx = session.beginTransaction();
-            hiberUsers = session.createQuery("FROM com.llisovichok.models.User u INNER JOIN FETCH u.pet INNER JOIN FETCH u.role").list();
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        }
-
-        if (hiberUsers != null) return hiberUsers;
-        else return Collections.emptyList();
+        return transaction((Session session) -> session.createQuery("FROM " +
+                "com.llisovichok.models.User u " +
+                "INNER JOIN FETCH u.pet INNER JOIN FETCH u.role").list());
     }
 
     /**
@@ -94,13 +84,9 @@ public class HibernateStorage implements Storage {
      */
     @Override
     public int add(final User user) {
-        return transaction(new Command<Integer>() {
-            @Override
-            public Integer execute(Session session) {
-                return (Integer) session.save(user);
+        return (Integer)transaction((Session session)-> session.save(user));
             }
-        });
-    }
+
 
     /**
      * Edits current data of the user
