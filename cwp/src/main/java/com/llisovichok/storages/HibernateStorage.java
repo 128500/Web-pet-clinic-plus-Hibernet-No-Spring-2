@@ -87,25 +87,18 @@ public class HibernateStorage implements Storage {
         return (Integer)transaction((Session session)-> session.save(user));
             }
 
-
     /**
      * Edits current data of the user
      * @param id - user's id number
      * @param user an object of User.class that must be saved
      */
     @Override
-    public void edit(Integer id, User user) {
-
-        Transaction tx = null;
-        try (Session session = factory.openSession()) {
-            tx = session.beginTransaction();
-            user.setId(id);
-            session.saveOrUpdate(user);
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        }
+    public void edit(Integer id, final User user) {
+        user.setId(id);
+        transaction(
+                (Session session) -> {session.saveOrUpdate(user);
+                return null;}
+        );
     }
 
     @Override
