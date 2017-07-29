@@ -51,17 +51,17 @@ public class HibernateStorage implements Storage {
 
     private <T> T transaction(Command<T> command){
         Transaction tx = null;
-        T t;
+        T genericType;
         try(Session session = factory.openSession()){
                 tx = session.beginTransaction();
-                t = command.execute(session);
+                genericType = command.execute(session);
                 tx.commit();
-                return t; //note (!) that return statement cannot be placed before committing the transaction
+                return genericType; //note (!) that return statement cannot be placed before committing the transaction
         } catch (HibernateException e){
             if(tx != null) tx.rollback();
             e.printStackTrace();
         }
-        throw new IllegalStateException("Some problem occurred! Couldn't execute the process!");
+        throw new IllegalStateException("Some problem occurred! Couldn't execute the transaction!");
     }
 
 
