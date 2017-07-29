@@ -45,6 +45,24 @@ public class HibernateStorage implements Storage {
         return INSTANCE;
     }
 
+    interface Command<T>{
+        T execute(Session session);
+    }
+
+    private <T> T transaction(Command<T> command){
+        Transaction tx = null;
+        try(Session session = factory.openSession()){
+                session.beginTransaction();
+                return command.execute(session);
+        } catch (HibernateException e){
+            if(tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally{
+            if (tx!= null)tx.commit();
+        }
+        throw new IllegalStateException("Some problem occurred! Couldn't execute the process!");
+    }
+
 
     /**
      * Retrieves the data of all users from the database
@@ -75,20 +93,13 @@ public class HibernateStorage implements Storage {
      * @return id of saved user
      */
     @Override
-    public int add(User user) {
-        Transaction tx = null;
-        Integer userId;
-
-        try (Session session = factory.openSession()) {
-            tx = session.beginTransaction();
-            userId = (Integer) session.save(user);
-            session.getTransaction().commit();
-            return userId;
-        } catch (HibernateException e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        }
-        throw new IllegalStateException("Couldn't save data into database!");
+    public int add(final User user) {
+        return transaction(new Command<Integer>() {
+            @Override
+            public Integer execute(Session session) {
+                return (Integer) session.save(user);
+            }
+        });
     }
 
     /**
@@ -132,8 +143,8 @@ public class HibernateStorage implements Storage {
                     "INNER JOIN FETCH u.role" +
                     " WHERE u.id =:id");
             q.setParameter("id", id);
-            user = (User) q.list().get(0);
-            //user  = session.get(User.class, id);
+            //user = (User) q.list().get(0);
+            user  = session.get(User.class, id);
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();

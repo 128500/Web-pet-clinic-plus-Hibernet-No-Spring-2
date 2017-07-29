@@ -99,7 +99,7 @@ public class HibernateStorageTest {
     public void add() throws Exception {
 
         Integer id  = H_STORAGE.add(getUser1());
-
+        System.out.println("Id : " + id);
         assertTrue(id > 0);
 
         User retrieved  = H_STORAGE.getUser(id);
