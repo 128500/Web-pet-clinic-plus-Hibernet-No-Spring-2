@@ -217,7 +217,7 @@ public class HibernateStorageTest {
         H_STORAGE.add(don);
         H_STORAGE.add(bob);
 
-        /* Looking in users' first names */
+        /* Searching in users' first names */
         /* Two matches found*/
         ArrayList<User> users = (ArrayList<User>) H_STORAGE.findUsers("sam", true, false, false);
         assertTrue(users.size() == 2);
@@ -235,7 +235,7 @@ public class HibernateStorageTest {
         assertTrue(users.size() == 0);
 
 
-        /* Looking in users' last names*/
+        /* Searching in users' last names*/
         /* Two matches found*/
         users = (ArrayList<User>) H_STORAGE.findUsers("Ramsy", false, true, false);
         assertTrue(users.size() == 2);
@@ -254,7 +254,7 @@ public class HibernateStorageTest {
 
 
 
-        /* Looking in pets' names*/
+        /* Searching in pets' names*/
         /* Two matches found*/
         users = (ArrayList<User>) H_STORAGE.findUsers("Darko", false, false, true);
         assertTrue(users.size() == 2);
@@ -273,7 +273,7 @@ public class HibernateStorageTest {
 
 
 
-        /* Looking in addresses */
+        /* Searching in addresses */
         /* Two matches found */
         users = (ArrayList<User>) H_STORAGE.findUsers("Fifth av.", false, false, false);
         assertTrue(users.size() == 2);

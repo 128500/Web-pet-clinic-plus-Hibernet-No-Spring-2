@@ -45,10 +45,21 @@ public class HibernateStorage implements Storage {
         return INSTANCE;
     }
 
+    /*Programming pattern - Command*/
     interface Command<T>{
         T execute(Session session);
     }
 
+    /**
+     * Executes actions (such as creating session and transaction)
+     * before and after main action (e.g. CRUD) that executes
+     * by anonymous class implementing <tt>Command interface</tt>
+     *
+     * @param command - a reference to generic type class object
+     * @param <T> returning generic type
+     * @return an object acquired as a result of of transaction to the database
+     * (may also be 'void' if a transaction returns void)
+     */
     private <T> T transaction(Command<T> command){
         Transaction tx = null;
         T genericType;
@@ -63,7 +74,6 @@ public class HibernateStorage implements Storage {
         }
         throw new IllegalStateException("Some problem occurred! Couldn't execute the transaction!");
     }
-
 
     /**
      * Retrieves the data of all users from the database
@@ -101,6 +111,10 @@ public class HibernateStorage implements Storage {
         );
     }
 
+    /**
+     * Not implemented here
+     * @return
+     */
     @Override
     public ConcurrentHashMap<Integer, User> getUsers() {
         return null;
@@ -140,18 +154,13 @@ public class HibernateStorage implements Storage {
      */
     @Override
     public void removeUser(Integer userId) {
-
-        Transaction tx = null;
-        try (Session session = factory.openSession()) {
-            tx = session.beginTransaction();
-            Query q = session.createQuery("DELETE com.llisovichok.models.User u WHERE u.id = :id");
-            q.setParameter("id", userId);
-            q.executeUpdate();
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        }
+        transaction(session -> {
+            Query query = session.createQuery
+                    ("DELETE com.llisovichok.models.User u WHERE u.id = :id");
+            query.setParameter("id", userId);
+            query.executeUpdate();
+            return null;
+        });
     }
 
     /*Not implemented here*/
@@ -174,12 +183,14 @@ public class HibernateStorage implements Storage {
      * @param lookInPetName marker for searching of matches in pet's name
      * @return results of searching as a collection of User.class objects
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<User> findUsers(String input, boolean lookInFirstName,
                                       boolean lookInLastName, boolean lookInPetName) {
 
         Collection<User> users = null;
-        Transaction tx = null;
+        /**
+         * Transaction tx = null;
         try(Session session = factory.openSession()){
 
             tx = session.beginTransaction();
@@ -212,6 +223,23 @@ public class HibernateStorage implements Storage {
             if(tx != null) tx.rollback();
             e.printStackTrace();
         }
+         */
+
+        users = transaction(session -> {
+            Query query = session.createQuery("FROM com.llisovichok.models.User user " +
+                    "INNER JOIN FETCH user.pet INNER JOIN FETCH user.role " +
+                    "WHERE lower(user.firstName) like ? " +
+                    "OR lower(user.lastName) like ? " +
+                    "OR lower(user.pet.name) like ? " +
+                    "OR lower(user.address) like ? " +
+                    "ORDER BY user.id ASC");
+            query.setParameter(0, lookInFirstName ? "%"+input.toLowerCase()+"%" : "");
+            query.setParameter(1, lookInLastName ? "%"+input.toLowerCase()+"%" : "");
+            query.setParameter(2, lookInPetName ? "%"+input.toLowerCase()+"%" : "");
+            query.setParameter(3, !lookInFirstName && !lookInLastName && !lookInPetName ? "%"+input.toLowerCase()+"%" : "");
+            return query.list();
+        });
+
         if(users != null) return users;
         else return Collections.emptyList();
     }
