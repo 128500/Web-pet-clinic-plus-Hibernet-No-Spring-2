@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * TODO add description to addPhoto method
+ * TODO add description to addPhoto method, implement method
  *
  * Created by KUDIN ALEKSANDR on 01.07.2017.
  */
@@ -79,12 +79,12 @@ public class HibernateStorage implements Storage {
      * Retrieves the data of all users from the database
      * @return collection of User.class objects
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<User> values() {
-
-        return transaction((Session session) -> session.createQuery("FROM " +
-                "com.llisovichok.models.User u " +
-                "INNER JOIN FETCH u.pet INNER JOIN FETCH u.role").list());
+        return transaction((Session session) -> session.createQuery(
+                "FROM com.llisovichok.models.User u " +
+                "JOIN FETCH u.pet JOIN FETCH u.role").list());
     }
 
     /**
@@ -127,23 +127,8 @@ public class HibernateStorage implements Storage {
      */
     @Override
     public User getUser(Integer id) {
-
-        Transaction tx = null;
         User user = null;
-        try (Session session = factory.openSession()) {
-            tx = session.beginTransaction();
-            Query q = session.createQuery("FROM com.llisovichok.models.User u INNER JOIN FETCH u.pet " +
-                    "INNER JOIN FETCH u.role" +
-                    " WHERE u.id =:id");
-            q.setParameter("id", id);
-            //user = (User) q.list().get(0);
-            user  = session.get(User.class, id);
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        }
-
+        user = transaction( session -> session.get(User.class, id));
         if (user != null) return user;
         else throw new IllegalStateException("Couldn't find data with such 'id'");
     }
@@ -169,6 +154,7 @@ public class HibernateStorage implements Storage {
 
     }
 
+    /*Not implemented yet*/
     @Override
     public void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize) {
 

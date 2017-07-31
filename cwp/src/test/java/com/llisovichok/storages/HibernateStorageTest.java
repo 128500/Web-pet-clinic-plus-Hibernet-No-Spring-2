@@ -169,7 +169,6 @@ public class HibernateStorageTest {
         retrieved  = H_STORAGE.getUser(id);
 
         assertEquals(true, checkChangedUser(retrieved));
-
     }
 
     @Test
@@ -191,10 +190,7 @@ public class HibernateStorageTest {
 
     @Test
     public void findUsers() throws Exception {
-        /**ArrayList<User> users = (ArrayList<User>) H_STORAGE.values();
-        for(User u : users){
-            H_STORAGE.removeUser(u.getId());
-        }*/
+
         User gordon = createUser1();
         gordon.setFirstName("Sam");
         gordon.setLastName("Edison");
