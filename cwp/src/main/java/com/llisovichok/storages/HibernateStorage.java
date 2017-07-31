@@ -84,7 +84,7 @@ public class HibernateStorage implements Storage {
     public Collection<User> values() {
         return transaction((Session session) -> session.createQuery(
                 "FROM com.llisovichok.models.User u " +
-                "JOIN FETCH u.pet JOIN FETCH u.role").list());
+                "JOIN FETCH u.pet JOIN FETCH u.role ORDER BY u.id").list());
     }
 
     /**
@@ -112,22 +112,14 @@ public class HibernateStorage implements Storage {
     }
 
     /**
-     * Not implemented here
-     * @return
-     */
-    @Override
-    public ConcurrentHashMap<Integer, User> getUsers() {
-        return null;
-    }
-
-    /**
      * Retrieves user from the database
      * @param id - user's id number assigned in database
      * @return an object of User.class
      */
+    @SuppressWarnings("unchecked")
     @Override
     public User getUser(Integer id) {
-        User user = null;
+        User user;
         user = transaction( session -> session.get(User.class, id));
         if (user != null) return user;
         else throw new IllegalStateException("Couldn't find data with such 'id'");
@@ -146,12 +138,6 @@ public class HibernateStorage implements Storage {
             query.executeUpdate();
             return null;
         });
-    }
-
-    /*Not implemented here*/
-    @Override
-    public void add(Integer id, User user) {
-
     }
 
     /*Not implemented yet*/
@@ -173,47 +159,40 @@ public class HibernateStorage implements Storage {
     @Override
     public Collection<User> findUsers(String input, boolean lookInFirstName,
                                       boolean lookInLastName, boolean lookInPetName) {
+        Collection<User> users;
 
-        Collection<User> users = null;
+        /*Solution with a criteria*/
         /**
-         * Transaction tx = null;
-        try(Session session = factory.openSession()){
+        users = transaction (
+            session ->{
+                Criteria criteria = session.createCriteria(com.llisovichok.models.User.class, "user");
+                criteria.createAlias("user.pet", "pet");
+                Disjunction disjunction = Restrictions.disjunction();// to set disjunction mode e.g.'first' OR 'last' OR 'petName'
 
-            tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(com.llisovichok.models.User.class, "user");
-            criteria.createAlias("user.pet", "pet");
+                if(lookInFirstName) {
+                    disjunction.add(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE));
+                }
 
-            Disjunction disjunction = Restrictions.disjunction();// to set disjunction mode e.g.'first' OR 'last' OR 'petName'
+                if(lookInLastName) {
+                    disjunction.add(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE));
+                }
 
-            if(lookInFirstName) {
-                disjunction.add(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE));
+                if(lookInPetName) {
+                    disjunction.add(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));
+                }
+
+                if(!lookInFirstName && !lookInLastName && !lookInPetName){
+                    disjunction.add(Restrictions.ilike("user.address", input, MatchMode.ANYWHERE));
+                }
+                criteria.add(disjunction);
+                return criteria.addOrder(Order.asc("id")).list();
             }
+        );*/
 
-            if(lookInLastName) {
-                disjunction.add(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE));
-            }
-
-            if(lookInPetName) {
-                disjunction.add(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));
-            }
-
-            if(!lookInFirstName && !lookInLastName && !lookInPetName){
-                disjunction.add(Restrictions.ilike("user.address", input, MatchMode.ANYWHERE));
-            }
-
-            criteria.add(disjunction);
-            users = criteria.addOrder(Order.asc("id")).list();
-
-            tx.commit();
-        } catch(HibernateException e){
-            if(tx != null) tx.rollback();
-            e.printStackTrace();
-        }
-         */
-
+        /*Solution with HQL*/
         users = transaction(session -> {
             Query query = session.createQuery("FROM com.llisovichok.models.User user " +
-                    "INNER JOIN FETCH user.pet INNER JOIN FETCH user.role " +
+                    "JOIN FETCH user.pet JOIN FETCH user.role " +
                     "WHERE lower(user.firstName) like ? " +
                     "OR lower(user.lastName) like ? " +
                     "OR lower(user.pet.name) like ? " +
@@ -237,4 +216,17 @@ public class HibernateStorage implements Storage {
     public void close() {
         factory.close();
     }
+
+    /* Not implemented here*/
+    @Override
+    public ConcurrentHashMap<Integer, User> getUsers() {
+        return null;
+    }
+
+    /*Not implemented here*/
+    @Override
+    public void add(Integer id, User user) {
+
+    }
+
 }

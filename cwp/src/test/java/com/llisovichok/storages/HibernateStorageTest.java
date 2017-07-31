@@ -286,5 +286,4 @@ public class HibernateStorageTest {
         users = (ArrayList<User>) H_STORAGE.findUsers("111", false, false, false);
         assertTrue(users.size() == 0);
     }
-
 }
