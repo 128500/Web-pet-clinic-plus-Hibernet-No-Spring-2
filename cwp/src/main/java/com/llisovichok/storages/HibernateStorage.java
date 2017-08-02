@@ -57,7 +57,7 @@ public class HibernateStorage implements Storage {
      *
      * @param command - a reference to generic type class object
      * @param <T> returning generic type
-     * @return an object acquired as a result of of transaction to the database
+     * @return an object acquired as a result of the transaction to the database
      * (may also be 'void' if a transaction returns void)
      */
     private <T> T transaction(Command<T> command){
@@ -143,8 +143,8 @@ public class HibernateStorage implements Storage {
     /*Not implemented yet*/
     @Override
     public void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize) {
-
     }
+
 
     /**
      * Searches for matches in users' first names, last names,
