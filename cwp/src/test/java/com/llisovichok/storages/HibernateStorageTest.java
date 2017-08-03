@@ -8,6 +8,10 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -285,5 +289,35 @@ public class HibernateStorageTest {
         /* No matches found */
         users = (ArrayList<User>) H_STORAGE.findUsers("111", false, false, false);
         assertTrue(users.size() == 0);
+    }
+
+    @Test
+    public void addPhoto() throws Exception{
+        ByteArrayInputStream bais = null;
+        try(FileInputStream fis = new FileInputStream("C:\\Users\\homeuser.1-HP\\Pictures\\47122310-landscape-pictures.jpg");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();) {
+
+            byte[] data = new byte[1024];
+            int nRead = 0;
+
+            while ((nRead = fis.read(data, 0, data.length)) != -1) {
+                baos.write(data, 0, nRead);
+            }
+
+            baos.flush();
+            int byteArraySize = baos.size();
+
+            byte[] buffer = baos.toByteArray();
+            bais = new ByteArrayInputStream(buffer);
+
+            int id = H_STORAGE.add(this.createUser1());
+
+            H_STORAGE.addPhoto(id, bais, byteArraySize);
+
+        } catch(IOException e){
+            e.printStackTrace();
+        } finally{
+            if(bais != null) bais.close();
+        }
     }
 }

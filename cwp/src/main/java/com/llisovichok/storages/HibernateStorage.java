@@ -1,6 +1,7 @@
 package com.llisovichok.storages;
 
 import com.llisovichok.lessons.clinic.Pet;
+import com.llisovichok.lessons.clinic.PetPhoto;
 import com.llisovichok.models.User;
 
 import org.hibernate.*;
@@ -12,6 +13,7 @@ import org.hibernate.criterion.*;
 import org.hibernate.sql.JoinType;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * TODO add description to addPhoto method, implement method
- *
+ * <p>
  * Created by KUDIN ALEKSANDR on 01.07.2017.
  */
 public class HibernateStorage implements Storage {
@@ -46,7 +48,7 @@ public class HibernateStorage implements Storage {
     }
 
     /*Programming pattern - Command*/
-    interface Command<T>{
+    interface Command<T> {
         T execute(Session session);
     }
 
@@ -56,20 +58,20 @@ public class HibernateStorage implements Storage {
      * by anonymous class implementing <tt>Command interface</tt>
      *
      * @param command - a reference to generic type class object
-     * @param <T> returning generic type
+     * @param <T>     returning generic type
      * @return an object acquired as a result of the transaction to the database
      * (may also be 'void' if a transaction returns void)
      */
-    private <T> T transaction(Command<T> command){
+    private <T> T transaction(Command<T> command) {
         Transaction tx = null;
         T genericType;
-        try(Session session = factory.openSession()){
-                tx = session.beginTransaction();
-                genericType = command.execute(session);
-                tx.commit();
-                return genericType; //note (!) that return statement cannot be placed before committing the transaction
-        } catch (HibernateException e){
-            if(tx != null) tx.rollback();
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            genericType = command.execute(session);
+            tx.commit();
+            return genericType; //note (!) that return statement cannot be placed before committing the transaction
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
             e.printStackTrace();
         }
         throw new IllegalStateException("Some problem occurred! Couldn't execute the transaction!");
@@ -77,6 +79,7 @@ public class HibernateStorage implements Storage {
 
     /**
      * Retrieves the data of all users from the database
+     *
      * @return collection of User.class objects
      */
     @SuppressWarnings("unchecked")
@@ -84,35 +87,40 @@ public class HibernateStorage implements Storage {
     public Collection<User> values() {
         return transaction((Session session) -> session.createQuery(
                 "FROM com.llisovichok.models.User u " +
-                "JOIN FETCH u.pet JOIN FETCH u.role ORDER BY u.id").list());
+                        "JOIN FETCH u.pet JOIN FETCH u.role ORDER BY u.id").list());
     }
 
     /**
      * Adds new user into database
+     *
      * @param user - an object of User.class that must be saved
      * @return id of saved user
      */
     @Override
     public int add(final User user) {
-        return (Integer)transaction((Session session)-> session.save(user));
-            }
+        return (Integer) transaction((Session session) -> session.save(user));
+    }
 
     /**
      * Edits current data of the user
-     * @param id - user's id number
+     *
+     * @param id   - user's id number
      * @param user an object of User.class that must be saved
      */
     @Override
     public void edit(Integer id, final User user) {
         user.setId(id);
         transaction(
-                (Session session) -> {session.saveOrUpdate(user);
-                return null;}
+                (Session session) -> {
+                    session.saveOrUpdate(user);
+                    return null;
+                }
         );
     }
 
     /**
      * Retrieves user from the database
+     *
      * @param id - user's id number assigned in database
      * @return an object of User.class
      */
@@ -120,13 +128,14 @@ public class HibernateStorage implements Storage {
     @Override
     public User getUser(Integer id) {
         User user;
-        user = transaction( session -> session.get(User.class, id));
+        user = transaction(session -> session.get(User.class, id));
         if (user != null) return user;
         else throw new IllegalStateException("Couldn't find data with such 'id'");
     }
 
     /**
      * Deletes user from database
+     *
      * @param userId - user's id number
      */
     @Override
@@ -143,16 +152,31 @@ public class HibernateStorage implements Storage {
     /*Not implemented yet*/
     @Override
     public void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize) {
+
+        Pet pet = getUser(userId).getPet();
+        PetPhoto photo = new PetPhoto();
+
+        byte[] photoBuffer = new byte[streamSize];
+        try {
+            photoBytes.read(photoBuffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        photo.setImage(photoBuffer);
+        photo.setPet(pet);
+        transaction(session -> session.save(photo));
     }
 
 
     /**
      * Searches for matches in users' first names, last names,
      * pet's names or addresses according to inputted  value
-     * @param input inputted value for searching
+     *
+     * @param input           inputted value for searching
      * @param lookInFirstName marker for searching of matches in first name
-     * @param lookInLastName marker for searching of matches in last name
-     * @param lookInPetName marker for searching of matches in pet's name
+     * @param lookInLastName  marker for searching of matches in last name
+     * @param lookInPetName   marker for searching of matches in pet's name
      * @return results of searching as a collection of User.class objects
      */
     @SuppressWarnings("unchecked")
@@ -163,31 +187,31 @@ public class HibernateStorage implements Storage {
 
         /*Solution with a criteria*/
         /**
-        users = transaction (
-            session ->{
-                Criteria criteria = session.createCriteria(com.llisovichok.models.User.class, "user");
-                criteria.createAlias("user.pet", "pet");
-                Disjunction disjunction = Restrictions.disjunction();// to set disjunction mode e.g.'first' OR 'last' OR 'petName'
+         users = transaction (
+         session ->{
+         Criteria criteria = session.createCriteria(com.llisovichok.models.User.class, "user");
+         criteria.createAlias("user.pet", "pet");
+         Disjunction disjunction = Restrictions.disjunction();// to set disjunction mode e.g.'first' OR 'last' OR 'petName'
 
-                if(lookInFirstName) {
-                    disjunction.add(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE));
-                }
+         if(lookInFirstName) {
+         disjunction.add(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE));
+         }
 
-                if(lookInLastName) {
-                    disjunction.add(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE));
-                }
+         if(lookInLastName) {
+         disjunction.add(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE));
+         }
 
-                if(lookInPetName) {
-                    disjunction.add(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));
-                }
+         if(lookInPetName) {
+         disjunction.add(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));
+         }
 
-                if(!lookInFirstName && !lookInLastName && !lookInPetName){
-                    disjunction.add(Restrictions.ilike("user.address", input, MatchMode.ANYWHERE));
-                }
-                criteria.add(disjunction);
-                return criteria.addOrder(Order.asc("id")).list();
-            }
-        );*/
+         if(!lookInFirstName && !lookInLastName && !lookInPetName){
+         disjunction.add(Restrictions.ilike("user.address", input, MatchMode.ANYWHERE));
+         }
+         criteria.add(disjunction);
+         return criteria.addOrder(Order.asc("id")).list();
+         }
+         );*/
 
         /*Solution with HQL*/
         users = transaction(session -> {
@@ -198,14 +222,14 @@ public class HibernateStorage implements Storage {
                     "OR lower(user.pet.name) like ? " +
                     "OR lower(user.address) like ? " +
                     "ORDER BY user.id ASC");
-            query.setParameter(0, lookInFirstName ? "%"+input.toLowerCase()+"%" : "");
-            query.setParameter(1, lookInLastName ? "%"+input.toLowerCase()+"%" : "");
-            query.setParameter(2, lookInPetName ? "%"+input.toLowerCase()+"%" : "");
-            query.setParameter(3, !lookInFirstName && !lookInLastName && !lookInPetName ? "%"+input.toLowerCase()+"%" : "");
+            query.setParameter(0, lookInFirstName ? "%" + input.toLowerCase() + "%" : "");
+            query.setParameter(1, lookInLastName ? "%" + input.toLowerCase() + "%" : "");
+            query.setParameter(2, lookInPetName ? "%" + input.toLowerCase() + "%" : "");
+            query.setParameter(3, !lookInFirstName && !lookInLastName && !lookInPetName ? "%" + input.toLowerCase() + "%" : "");
             return query.list();
         });
 
-        if(users != null) return users;
+        if (users != null) return users;
         else return Collections.emptyList();
     }
 

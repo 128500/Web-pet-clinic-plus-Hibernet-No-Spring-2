@@ -10,18 +10,18 @@ public class Pet implements Serializable {
 
 	private Integer id;
 
-	/**
-	*A name of the pet
-	*/
+	/* A name of the pet */
 	private String name;
-	/**
-	 * A kind of the pet
-	 */
+
+	/*A kind of the pet */
 	private String kind = "pet";
-	/**
-	 * Age of the pet
-	 */
+
+	/* Age of the pet */
 	private int age;
+
+	/*Pet's photograph*/
+	private PetPhoto photo;
+
 	/**
 	 * Detailed information about the pet, containing photo and health problems description
 	 */
