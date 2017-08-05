@@ -51,12 +51,13 @@ public class AddInfoServlet extends HttpServlet{
             int byteArraySize = baos.size();
 
             byte[] buffer = baos.toByteArray();
-            ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+            //ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
 
-            //JDBC_STORAGE.addPhoto(id, bais, byteArraySize);
-            HIBERNATE_STORAGE.addPhoto(id, bais, byteArraySize);
+            //JDBC_STORAGE.addPhotoWithHibernate(id, bais, byteArraySize);
+            //HIBERNATE_STORAGE.addPhotoWithHibernate(id, bais, byteArraySize);
+            HIBERNATE_STORAGE.addPhotoWithHibernate(id, buffer);
 
-            bais.close();
+            //bais.close();
 
         } catch(IOException e){
             e.printStackTrace();

@@ -23,7 +23,7 @@ public class MemoryStorage implements Storage {
     }
 
     @Override
-    public int add(final User user) {
+    public int addUser(final User user) {
         this.users.put(user.getId(), user);
         return user.getId();
     }
@@ -32,8 +32,9 @@ public class MemoryStorage implements Storage {
     public void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize){
     }
 
+
     @Override
-    public void edit(final Integer id, final User user) {
+    public void editUser(final Integer id, final User user) {
 
     }
 
@@ -54,7 +55,7 @@ public class MemoryStorage implements Storage {
     }
 
     @Override
-    public void add(Integer id, User user) {
+    public void addUser(Integer id, User user) {
         this.users.put(this.ids.incrementAndGet(), user);
     }
 

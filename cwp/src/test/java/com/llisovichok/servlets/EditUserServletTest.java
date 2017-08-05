@@ -27,9 +27,9 @@ public class EditUserServletTest extends Mockito {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         User user = new User("Test", "Test", "Test", 1245, new Pet("Test", "test", 1245));
-        //USER_DATA.add(123456, user);
+        //USER_DATA.addUser(123456, user);
         //System.out.println(USER_DATA.getUser(123456).toString());
-        int id = JDBC_STORAGE.add(user);
+        int id = JDBC_STORAGE.addUser(user);
 
         when(request.getParameter("id")).thenReturn(String.valueOf(id));
         when(request.getParameter("client first name")).thenReturn("Altered");

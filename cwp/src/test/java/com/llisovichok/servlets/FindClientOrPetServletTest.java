@@ -48,7 +48,7 @@ public class FindClientOrPetServletTest extends Mockito {
         RequestDispatcher reqDispatcher = mock(RequestDispatcher.class);
 
 
-        int id = JDBC_STORAGE.add(new User("Test","test", "test", 00001, new Pet("test", "test", 2)));
+        int id = JDBC_STORAGE.addUser(new User("Test","test", "test", 00001, new Pet("test", "test", 2)));
 
         try {
             when(req.getParameter("input")).thenReturn("Test");

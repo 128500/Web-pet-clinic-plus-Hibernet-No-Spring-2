@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
- * TODO add method to check the input letters
+ * TODO addUser method to check the input letters
  * Created by ALEKSANDR KUDIN on 25.04.2017.
  */
 public class FindClientOrPetServlet extends HttpServlet {
@@ -47,6 +47,7 @@ public class FindClientOrPetServlet extends HttpServlet {
     public void destroy(){
         super.destroy();
         //JDBC_STORAGE.close();
+        HIBERNATE_STORAGE.close();
     }
 
     private boolean isNotNull(Object o){

@@ -32,8 +32,8 @@ public class DeleteUserServletTest extends Mockito {
         User userTwo = new User("t", "t", "t", 12, new Pet("t", "t", 2));
 
 
-        int idOne = JDBC_STORAGE.add(userOne);
-        int idTwo = JDBC_STORAGE.add(userTwo);
+        int idOne = JDBC_STORAGE.addUser(userOne);
+        int idTwo = JDBC_STORAGE.addUser(userTwo);
 
         ArrayList<User> before = new ArrayList<>(JDBC_STORAGE.values());
         ArrayList<Integer> ids = new ArrayList<>();

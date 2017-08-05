@@ -8,7 +8,7 @@
         <meta attribute="class-description">
             This class contains the user's role detail.
         </meta>
-        <id name="id" type="java.lang.Integer" column="id">
+        <id name="id" type="java.lang.Integer" column="role_id">
             <generator class="sequence"/>
         </id>
         <property name="name" column="name" type="string"/>

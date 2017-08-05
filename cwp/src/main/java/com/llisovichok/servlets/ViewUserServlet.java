@@ -31,6 +31,7 @@ public class ViewUserServlet extends HttpServlet {
     public void destroy(){
         super.destroy();
         //JDBC_STORAGE.close();
+        HIBERNATE_STORAGE.close();
     }
 
 }

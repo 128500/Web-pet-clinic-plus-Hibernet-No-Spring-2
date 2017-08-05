@@ -23,7 +23,7 @@ public class Pet implements Serializable {
 	private PetPhoto photo;
 
 	/**
-	 * Detailed information about the pet, containing photo and health problems description
+	 * Detailed information about the pet, containing health problems description
 	 */
 	private DetailedInfo detailedInfo;
 
@@ -68,6 +68,14 @@ public class Pet implements Serializable {
 		return this.age;
 	}
 
+	public PetPhoto getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(PetPhoto photo) {
+		this.photo = photo;
+	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -91,7 +99,6 @@ public class Pet implements Serializable {
 	public void setDetailedInfo(final  DetailedInfo detailedInfo) {
 		this.detailedInfo = detailedInfo;
 	}
-
 
 	@Override
 	public String toString() {

@@ -57,10 +57,10 @@ public class CreateUserServlet extends HttpServlet {
         if(req.getParameter("add") != null) {
             //User user = createUser(req);
             //System.out.println(user.toString());
-            //USER_DATA.add(Integer.valueOf(user.getId()), user);
+            //USER_DATA.addUser(Integer.valueOf(user.getId()), user);
             User user = createUser(req);
-            //JDBC_STORAGE.add(user);
-            HIBERNATE_STORAGE.add(user);
+            //JDBC_STORAGE.addUser(user);
+            HIBERNATE_STORAGE.addUser(user);
         }
     }
 

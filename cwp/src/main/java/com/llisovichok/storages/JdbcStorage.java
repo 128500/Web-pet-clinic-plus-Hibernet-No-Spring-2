@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * TODO rewrite method add (change it to 'returning boolean')
+ * TODO rewrite method addUser (change it to 'returning boolean')
  * Created by ALEKSANDR KUDIN on 12.04.2017.
  */
 public class JdbcStorage implements Storage {
@@ -80,7 +80,7 @@ public class JdbcStorage implements Storage {
     }
 
     @Override
-    public int add(final User user) {
+    public int addUser(final User user) {
 
         int generatedId = -1;
 
@@ -114,7 +114,7 @@ public class JdbcStorage implements Storage {
     }
 
     @Override
-    public void edit(final Integer id, final User user) {
+    public void editUser(final Integer id, final User user) {
 
         try (final PreparedStatement clientStatement = this.connection.prepareStatement("UPDATE clients SET first_name=?, last_name=?, address=?, phone=? WHERE public.clients.uid=?");
              final PreparedStatement petStatement= this.connection.prepareStatement("UPDATE pets SET nickname=?, kind=?, age=? WHERE public.pets.client_id=?;")){
@@ -188,7 +188,7 @@ public class JdbcStorage implements Storage {
     }
 
     @Override
-    public void add(Integer id, User user) {
+    public void addUser(Integer id, User user) {
 
     }
 

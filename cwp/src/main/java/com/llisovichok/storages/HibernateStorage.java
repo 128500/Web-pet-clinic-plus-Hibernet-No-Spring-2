@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * TODO add description to addPhoto method, implement method
+ * TODO addUser description to addPhotoWithHibernate method, implement method
  * <p>
  * Created by KUDIN ALEKSANDR on 01.07.2017.
  */
-public class HibernateStorage implements Storage {
+public class HibernateStorage implements HiberStorage {
 
     private static final HibernateStorage INSTANCE = new HibernateStorage();
 
@@ -97,7 +97,7 @@ public class HibernateStorage implements Storage {
      * @return id of saved user
      */
     @Override
-    public int add(final User user) {
+    public int addUser(final User user) {
         return (Integer) transaction((Session session) -> session.save(user));
     }
 
@@ -108,7 +108,7 @@ public class HibernateStorage implements Storage {
      * @param user an object of User.class that must be saved
      */
     @Override
-    public void edit(Integer id, final User user) {
+    public void editUser(Integer id, final User user) {
         user.setId(id);
         transaction(
                 (Session session) -> {
@@ -149,10 +149,15 @@ public class HibernateStorage implements Storage {
         });
     }
 
-    /*Not implemented yet*/
+    /**
+     *Adds a photo of a pet to the database
+     * @param userId - id of a user to whom pet it need to be set a photo
+     * @param photoBytes - binary photograph data as <tt>ByteArrayInputStream</tt>
+     * @param streamSize - size of <tt>ByteArrayInputStream</tt>
+     */
     @Override
     public void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize) {
-
+/**
         Pet pet = getUser(userId).getPet();
         PetPhoto photo = new PetPhoto();
 
@@ -165,7 +170,42 @@ public class HibernateStorage implements Storage {
 
         photo.setImage(photoBuffer);
         photo.setPet(pet);
-        transaction(session -> session.save(photo));
+        transaction(session -> session.save(photo));*/
+    }
+
+    /**
+     * Adds a photo of a pet to the database
+     * @param id - id of a user to whom pet it need to be set a photo
+     * @param photo - binary photograph data as an array of bytes
+     */
+    @Override
+    public void addPhotoWithHibernate(Integer id, byte[] photo){
+        User user = getUser(id);
+        Pet pet = user.getPet();
+        PetPhoto petPhoto = new PetPhoto(photo);
+        petPhoto.setPet(pet);
+        pet.setPhoto(petPhoto);
+
+        transaction((Session session) -> {
+            session.saveOrUpdate(pet);
+            return null;
+        });
+    }
+
+    /**
+     * Retrieve pet identity from the database according to the given pet's id
+     * @param id - pet's id in the database
+     * @return pet object
+     */
+    @Override
+    public Pet getPetById(final Integer id){
+        return (Pet)transaction((Session session) -> session.createQuery("FROM Pet pet " +
+                "WHERE pet.id = :id")
+                .setParameter("id", id)
+                .list()
+                .iterator()
+                .next()
+        );
     }
 
 
@@ -194,21 +234,21 @@ public class HibernateStorage implements Storage {
          Disjunction disjunction = Restrictions.disjunction();// to set disjunction mode e.g.'first' OR 'last' OR 'petName'
 
          if(lookInFirstName) {
-         disjunction.add(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE));
+         disjunction.addUser(Restrictions.ilike("user.firstName", input, MatchMode.ANYWHERE));
          }
 
          if(lookInLastName) {
-         disjunction.add(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE));
+         disjunction.addUser(Restrictions.ilike("user.lastName", input, MatchMode.ANYWHERE));
          }
 
          if(lookInPetName) {
-         disjunction.add(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));
+         disjunction.addUser(Restrictions.ilike("pet.name", input, MatchMode.ANYWHERE));
          }
 
          if(!lookInFirstName && !lookInLastName && !lookInPetName){
-         disjunction.add(Restrictions.ilike("user.address", input, MatchMode.ANYWHERE));
+         disjunction.addUser(Restrictions.ilike("user.address", input, MatchMode.ANYWHERE));
          }
-         criteria.add(disjunction);
+         criteria.addUser(disjunction);
          return criteria.addOrder(Order.asc("id")).list();
          }
          );*/
@@ -249,7 +289,7 @@ public class HibernateStorage implements Storage {
 
     /*Not implemented here*/
     @Override
-    public void add(Integer id, User user) {
+    public void addUser(Integer id, User user) {
 
     }
 

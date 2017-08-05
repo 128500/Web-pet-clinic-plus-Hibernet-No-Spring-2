@@ -1,6 +1,7 @@
 package com.llisovichok.servlets;
 
 import com.llisovichok.models.User;
+import com.llisovichok.storages.HibernateStorage;
 import com.llisovichok.storages.JdbcStorage;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,11 +24,12 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by ALEKSANDR KUDIN on 31.03.2017.
  */
-@Ignore
+
 public class CreateUserServletTest extends Mockito {
 
-    private JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
-    @Ignore
+    //private JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    private final static HibernateStorage H_STORAGE  = HibernateStorage.getInstance();
+
     @Test
     public void doPost() throws Exception {
 
@@ -35,7 +37,8 @@ public class CreateUserServletTest extends Mockito {
         HttpServletResponse resp = mock(HttpServletResponse.class);
 
 
-        int previousSize = JDBC_STORAGE.values().size();
+        //int previousSize = JDBC_STORAGE.values().size();
+        int previousSize = H_STORAGE.values().size();
 
         when(req.getParameter("add")).thenReturn("add");
         when(req.getParameter("client first name")).thenReturn("fName");
@@ -49,7 +52,7 @@ public class CreateUserServletTest extends Mockito {
 
         new CreateUserServlet().doPost(req, resp);
 
-        ArrayList<User> users = new ArrayList<>(JDBC_STORAGE.values());
+        ArrayList<User> users = new ArrayList<>(H_STORAGE.values());
         User user = users.get(users.size() - 1);
         int id = user.getId();
 
@@ -75,11 +78,11 @@ public class CreateUserServletTest extends Mockito {
             assertEquals(2, user.getPet().getAge());
 
         } finally{
-            JDBC_STORAGE.removeUser(id);
+            H_STORAGE.removeUser(id);
         }
 
 
-        int previousSize2 = JDBC_STORAGE.values().size();
+        int previousSize2 = H_STORAGE.values().size();
 
         Map<String, String[]> requestMap = new LinkedHashMap<>();
 
@@ -104,8 +107,8 @@ public class CreateUserServletTest extends Mockito {
         String[] petAge = {"00"};
         requestMap.put("pet age", petAge);
 
-        String[] add = {"add"};
-        requestMap.put("add", add);
+        String[] add = {"addUser"};
+        requestMap.put("addUser", add);
 
         when(req.getParameterMap()).thenReturn(requestMap);
 
@@ -124,11 +127,12 @@ public class CreateUserServletTest extends Mockito {
         verify(req, atLeastOnce()).getParameterMap();
 
 
-        int currentSize2 = JDBC_STORAGE.values().size();
+        int currentSize2 = H_STORAGE.values().size();
 
         assertTrue(currentSize2 == previousSize2);
     }
-    @Ignore
+
+
     @Test
     public void checkRequestParameters() throws Exception{
 
@@ -157,8 +161,8 @@ public class CreateUserServletTest extends Mockito {
         String[] petAge = {""};
         requestMap.put("pet age", petAge);
 
-        String[] add = {"add"};
-        requestMap.put("add", add);
+        String[] add = {"addUser"};
+        requestMap.put("addUser", add);
 
         when(req.getParameterMap()).thenReturn(requestMap);
 
@@ -176,7 +180,7 @@ public class CreateUserServletTest extends Mockito {
         assertEquals("PET KIND", result.get(5));
         assertEquals("PET AGE", result.get(6));
     }
-    @Ignore
+
     @Test
     public void createUser() throws Exception {
 
@@ -190,7 +194,7 @@ public class CreateUserServletTest extends Mockito {
         when(req.getParameter("pet kind")).thenReturn("kind");
         when(req.getParameter("pet age")).thenReturn("2");
 
-        //User user = new CreateUserServlet().createUser(req);
+        User user = new CreateUserServlet().createUser(req);
 
         verify(req, atLeast(1)).getParameter("client first name");
         verify(req, atLeast(1)).getParameter("client last name");
@@ -200,14 +204,13 @@ public class CreateUserServletTest extends Mockito {
         verify(req, atLeast(1)).getParameter("pet kind");
         verify(req, atLeast(1)).getParameter("pet age");
 
-        //assertEquals("fName", user.getFirstName());
-        //assertEquals("lName", user.getLastName());
-        //assertEquals("address", user.getAddress());
-        //assertEquals(102, user.getPhoneNumber());
-        //assertEquals("pName", user.getPet().getName());
-        //assertEquals("kind", user.getPet().getKind());
-        //assertEquals(2, user.getPet().getAge());
-
+        assertEquals("fName", user.getFirstName());
+        assertEquals("lName", user.getLastName());
+        assertEquals("address", user.getAddress());
+        assertEquals(102, user.getPhoneNumber());
+        assertEquals("pName", user.getPet().getName());
+        assertEquals("kind", user.getPet().getKind());
+        assertEquals(2, user.getPet().getAge());
     }
     @Ignore
     @Test

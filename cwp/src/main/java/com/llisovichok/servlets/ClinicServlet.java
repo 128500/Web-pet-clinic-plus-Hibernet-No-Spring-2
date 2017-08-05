@@ -63,7 +63,7 @@ public class ClinicServlet extends HttpServlet {
     }
 
     private void doAdd(HttpServletRequest req)throws IOException{
-        if(req.getParameter("add") != null) {
+        if(req.getParameter("addUser") != null) {
         Client client = createClient(req);
         this.clients.add(client);
         }
@@ -151,7 +151,7 @@ public class ClinicServlet extends HttpServlet {
                         "   <br><br>"+
                         "   Client name : <input required type = 'text' name = 'client name'>" +
                         "   <input type = 'reset' value = 'Reset all'>" +
-                        "   <input type = 'submit' name = 'add' value = 'Add'>" +
+                        "   <input type = 'submit' name = 'addUser' value = 'Add'>" +
                         "   </form>"
         );
         return sbAdd.toString();

@@ -8,10 +8,7 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -74,12 +71,18 @@ public class HibernateStorageTest {
     }
 
     @Test
+    public void getInstance() throws Exception {
+        assertTrue(H_STORAGE != null);
+
+    }
+
+    @Test
     public void values() throws Exception {
         for(int i = 0; i < 10; i++){
 
             User user = createUser1();
 
-            final int id = H_STORAGE.add(user);
+            final int id = H_STORAGE.addUser(user);
             User retrieved  = H_STORAGE.getUser(id);
 
             m1.setUser(retrieved);
@@ -89,11 +92,11 @@ public class HibernateStorageTest {
             messages.add(m2);
             retrieved.setMessages(messages);
 
-            H_STORAGE.edit(id, retrieved);
+            H_STORAGE.editUser(id, retrieved);
         }
 
         ArrayList<User> users = (ArrayList<User>) H_STORAGE.values();
-        assertTrue(users.size() == 10);
+        assertTrue(users.size() >= 10);
         for(User u : users){
             assertEquals(true, checkUser1(u));
         }
@@ -102,7 +105,7 @@ public class HibernateStorageTest {
     @Test
     public void add() throws Exception {
 
-        Integer id  = H_STORAGE.add(this.createUser1());
+        Integer id  = H_STORAGE.addUser(this.createUser1());
         System.out.println("Id : " + id);
         assertTrue(id > 0);
 
@@ -115,7 +118,7 @@ public class HibernateStorageTest {
         messages.add(m2);
         retrieved.setMessages(messages);
 
-        H_STORAGE.edit(id, retrieved);
+        H_STORAGE.editUser(id, retrieved);
 
         retrieved  = H_STORAGE.getUser(id);
 
@@ -125,7 +128,7 @@ public class HibernateStorageTest {
     @Test
     public void edit() throws Exception {
 
-        Integer id = H_STORAGE.add(this.createUser1());
+        Integer id = H_STORAGE.addUser(this.createUser1());
 
         User retrieved = H_STORAGE.getUser(id);
 
@@ -148,7 +151,7 @@ public class HibernateStorageTest {
         messages.add(m2);
         retrieved.setMessages(messages);
 
-        H_STORAGE.edit(id, retrieved);
+        H_STORAGE.editUser(id, retrieved);
 
         retrieved  = H_STORAGE.getUser(id);
         assertEquals(true, checkChangedUser(retrieved));
@@ -157,7 +160,7 @@ public class HibernateStorageTest {
     @Test
     public void getUser() throws Exception {
 
-        Integer id = H_STORAGE.add(this.createUser2());
+        Integer id = H_STORAGE.addUser(this.createUser2());
 
         User retrieved  = H_STORAGE.getUser(id);
 
@@ -168,7 +171,7 @@ public class HibernateStorageTest {
         messages.add(m2);
         retrieved.setMessages(messages);
 
-        H_STORAGE.edit(id, retrieved);
+        H_STORAGE.editUser(id, retrieved);
 
         retrieved  = H_STORAGE.getUser(id);
 
@@ -180,8 +183,8 @@ public class HibernateStorageTest {
 
         ArrayList<User> users_before = (ArrayList<User>)H_STORAGE.values();
 
-        Integer id1 = H_STORAGE.add(createUser1());
-        Integer id2 = H_STORAGE.add(createUser2());
+        Integer id1 = H_STORAGE.addUser(createUser1());
+        Integer id2 = H_STORAGE.addUser(createUser2());
 
         ArrayList<User> users_current = (ArrayList<User>)H_STORAGE.values();
         assertTrue(users_current.size() > users_before.size());
@@ -213,9 +216,9 @@ public class HibernateStorageTest {
         bob.getPet().setName("Diana");
         bob.setAddress("Passadina st.");
 
-        H_STORAGE.add(gordon);
-        H_STORAGE.add(don);
-        H_STORAGE.add(bob);
+        H_STORAGE.addUser(gordon);
+        H_STORAGE.addUser(don);
+        H_STORAGE.addUser(bob);
 
         /* Searching in users' first names */
         /* Two matches found*/
@@ -292,6 +295,17 @@ public class HibernateStorageTest {
     }
 
     @Test
+    public void getPetById() throws Exception {
+        Integer id = H_STORAGE.addUser(createUser2());
+        Integer petId = H_STORAGE.getUser(id).getPet().getId();
+        System.out.println("Id " + petId);
+        Pet pet = H_STORAGE.getPetById(petId);
+        assertEquals("Harpy", pet.getName());
+        assertEquals("harpy", pet.getKind());
+        assertEquals(5, pet.getAge());
+    }
+
+    @Test
     public void addPhoto() throws Exception{
         ByteArrayInputStream bais = null;
         try(FileInputStream fis = new FileInputStream("C:\\Users\\homeuser.1-HP\\Pictures\\47122310-landscape-pictures.jpg");
@@ -310,7 +324,7 @@ public class HibernateStorageTest {
             byte[] buffer = baos.toByteArray();
             bais = new ByteArrayInputStream(buffer);
 
-            int id = H_STORAGE.add(this.createUser1());
+            int id = H_STORAGE.addUser(this.createUser1());
 
             H_STORAGE.addPhoto(id, bais, byteArraySize);
 
@@ -319,5 +333,37 @@ public class HibernateStorageTest {
         } finally{
             if(bais != null) bais.close();
         }
+    }
+
+    @Test
+    public void addPhotoWithHibernate() throws Exception {
+
+        File image = new File("C:\\Users\\homeuser.1-HP\\Pictures\\47122310-landscape-pictures.jpg");
+        byte[] photoBuffer = null;
+        try (FileInputStream fis = new FileInputStream(image)) {
+            long size = image.length();
+            photoBuffer = new byte[(int) size];
+            int byteRead;
+            do {
+                byteRead = fis.read(photoBuffer);
+            }
+            while (byteRead != -1);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Integer id = H_STORAGE.addUser(createUser1());
+
+        if(photoBuffer != null){
+            H_STORAGE.addPhotoWithHibernate(id, photoBuffer);
+        }
+
+        Integer petId = H_STORAGE.getUser(id).getPet().getId();
+
+        Pet pet  = H_STORAGE.getPetById(petId);
+        System.out.println(image.length());
+        System.out.println(pet.getPhoto().getImage().length);
+        assertTrue(image.length() == pet.getPhoto().getImage().length);
     }
 }

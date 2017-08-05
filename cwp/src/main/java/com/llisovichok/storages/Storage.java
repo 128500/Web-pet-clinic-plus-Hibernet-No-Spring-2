@@ -13,9 +13,9 @@ public interface Storage {
 
     Collection<User> values();
 
-    int add(User user);
+    int addUser(User user);
 
-    void edit(Integer id, User user);
+    void editUser(Integer id, User user);
 
     ConcurrentHashMap<Integer, User> getUsers();
 
@@ -23,7 +23,7 @@ public interface Storage {
 
     void removeUser(Integer userId);
 
-    void add(Integer id, User user);
+    void addUser(Integer id, User user);
 
     void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize);
 

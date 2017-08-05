@@ -2,9 +2,7 @@ package com.llisovichok.storages;
 
 import com.llisovichok.models.User;
 
-import java.awt.*;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,18 +21,19 @@ public class UserCache implements Storage {
     }
 
     @Override
-    public int add(final User user) {
-       return  this.memoryStorage.add(user);
+    public int addUser(final User user) {
+       return  this.memoryStorage.addUser(user);
 
     }
 
+    /* Not implemented here */
     @Override
     public void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize){
     }
 
     @Override
-    public void edit(final Integer id, final User user) {
-        this.memoryStorage.edit(id, user);
+    public void editUser(final Integer id, final User user) {
+        this.memoryStorage.editUser(id, user);
 
     }
 
@@ -55,8 +54,8 @@ public class UserCache implements Storage {
     }
 
     @Override
-    public void add(Integer id, User user) {
-        this.memoryStorage.add(id, user);
+    public void addUser(Integer id, User user) {
+        this.memoryStorage.addUser(id, user);
     }
 
 

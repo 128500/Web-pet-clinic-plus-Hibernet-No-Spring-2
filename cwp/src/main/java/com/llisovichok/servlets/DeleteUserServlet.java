@@ -29,5 +29,6 @@ public class DeleteUserServlet extends HttpServlet {
     public void destroy(){
         super.destroy();
         //JDBC_STORAGE.close();
+        HIBERNATE_STORAGE.close();
     }
 }

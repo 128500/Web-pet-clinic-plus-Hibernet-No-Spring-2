@@ -68,8 +68,8 @@ public class JdbcStorageTest extends Mockito {
         User test2 = new User("Opra", "Jenkins", "Greedy st., 458", 58235419, new Pet("Dodik", "snake", 4));
 
         int id1, id2;
-        id1 = JDBC_STORAGE.add(test1);
-        id2 = JDBC_STORAGE.add(test2);
+        id1 = JDBC_STORAGE.addUser(test1);
+        id2 = JDBC_STORAGE.addUser(test2);
 
         assertTrue(id1 > 0 && id2 > 0);
 
@@ -108,7 +108,7 @@ public class JdbcStorageTest extends Mockito {
     public void add() throws Exception {
         User user = new User("Test", "Testing", "Test", 647834783, new Pet("Test", "test", 2));
         int id;
-        id = JDBC_STORAGE.add(user);
+        id = JDBC_STORAGE.addUser(user);
         assertTrue(id > 0);
 
         User addedUser = JDBC_STORAGE.getUser(id);
@@ -128,9 +128,9 @@ public class JdbcStorageTest extends Mockito {
         User user = new User("Gal", "Hulio", "Hepa st., 47", 647834783, new Pet("Joric", "dog", 2));
         User alteredUser = new User("Opra", "Jenkins", "Greedy st., 458", 58235419, new Pet("Dodik", "snake", 4));
         int id;
-        id = JDBC_STORAGE.add(user);
+        id = JDBC_STORAGE.addUser(user);
         assertTrue(id >0);
-        JDBC_STORAGE.edit(id, alteredUser);
+        JDBC_STORAGE.editUser(id, alteredUser);
         User alterEgo = JDBC_STORAGE.getUser(id);
         assertEquals("Opra", alterEgo.getFirstName() );
         assertEquals("Jenkins", alterEgo.getLastName() );
@@ -145,7 +145,7 @@ public class JdbcStorageTest extends Mockito {
     @Test
     public void getUser() throws Exception {
         User user = new User("Test", "Test", "Test", 103, new Pet("Test", "test", 100));
-        int id = JDBC_STORAGE.add(user);
+        int id = JDBC_STORAGE.addUser(user);
         assertTrue(id > 0);
         User obtainedUser = JDBC_STORAGE.getUser(id);
         assertEquals("Test", obtainedUser.getFirstName());
@@ -161,7 +161,7 @@ public class JdbcStorageTest extends Mockito {
     @Test(expected = IndexOutOfBoundsException.class)
     public void removeUser() throws Exception {
         User user = new User("Test", "Test", "Test", 103, new Pet("Test", "test", 100));
-        int id = JDBC_STORAGE.add(user);
+        int id = JDBC_STORAGE.addUser(user);
         assertTrue(id > 0);
         JDBC_STORAGE.removeUser(id);
         JDBC_STORAGE.getUser(id);
@@ -173,9 +173,9 @@ public class JdbcStorageTest extends Mockito {
         User user = new User("Test", "Test", "Test", 103, new Pet("TEST", "test", 100));
         User user2 = new User("Pest", "Test", "Test", 103, new Pet("TEST", "test", 100));
         User user3 = new User("Dest", "Test", "Test", 103, new Pet("TEST", "test", 100));
-        int id = JDBC_STORAGE.add(user);
-        int id2 = JDBC_STORAGE.add(user2);
-        int id3 = JDBC_STORAGE.add(user3);
+        int id = JDBC_STORAGE.addUser(user);
+        int id2 = JDBC_STORAGE.addUser(user2);
+        int id3 = JDBC_STORAGE.addUser(user3);
 
         try {
             assertTrue(id > 0);

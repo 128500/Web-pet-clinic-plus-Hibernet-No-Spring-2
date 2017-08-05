@@ -26,8 +26,8 @@ public class EditUserServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         Integer id = Integer.valueOf(req.getParameter("id"));
         User user = createUserServlet.createUser(req);
-        //JDBC_STORAGE.edit(id, user);
-        HIBERNATE_STORAGE.edit(id, user);
+        //JDBC_STORAGE.editUser(id, user);
+        HIBERNATE_STORAGE.editUser(id, user);
         resp.sendRedirect(String.format("%s%s", req.getContextPath(), "/user/view/"));
     }
 
