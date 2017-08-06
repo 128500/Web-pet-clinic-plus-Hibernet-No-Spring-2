@@ -8,6 +8,7 @@ public class Role extends Base{
     private String name;
 
     public Role(){}
+
     public Role(String name){
         this.name = name;
     }

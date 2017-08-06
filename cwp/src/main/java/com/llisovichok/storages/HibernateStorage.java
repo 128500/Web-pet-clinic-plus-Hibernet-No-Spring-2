@@ -142,7 +142,7 @@ public class HibernateStorage implements HiberStorage {
     public void removeUser(Integer userId) {
         transaction(session -> {
             Query query = session.createQuery
-                    ("DELETE com.llisovichok.models.User u WHERE u.id = :id");
+                    ("DELETE com.llisovichok.models.User user WHERE user.id = :id");
             query.setParameter("id", userId);
             query.executeUpdate();
             return null;

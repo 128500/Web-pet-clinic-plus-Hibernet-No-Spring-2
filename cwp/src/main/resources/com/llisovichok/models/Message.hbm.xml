@@ -12,7 +12,7 @@
             <generator class="sequence"/>
         </id>
         <property name="text" column="text" type="string"/>
-        <many-to-one name="user" column="user_id" class="com.llisovichok.models.User" cascade="all"/>
+        <many-to-one name="user" column="user_id" class="com.llisovichok.models.User" insert="false" update="false"/>
     </class>
 
 </hibernate-mapping>

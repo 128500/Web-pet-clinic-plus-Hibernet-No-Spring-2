@@ -17,12 +17,12 @@
         <property name="address" column="address" type="string"/>
         <property name="phoneNumber" column="phone" type="java.lang.Long"/>
 
-        <many-to-one name="pet" column="id_pet" unique="true" cascade="all" fetch="join"/>
+        <many-to-one name="pet" column="id_pet" unique="true" cascade="all-delete-orphan" fetch="join"/>
     </class>
 
     <subclass name="com.llisovichok.models.User" extends="com.llisovichok.lessons.clinic.Client">
-        <many-to-one name="role" column="id_role" unique="true" cascade="all" fetch="join"/>
-        <set name="messages" table="message_t" lazy="false" inverse="true" cascade="all">
+        <many-to-one name="role" column="id_role" unique="true" cascade="all-delete-orphan" fetch="join"/>
+        <set name="messages" table="message_t" lazy="false" cascade="all-delete-orphan">
             <key column="user_id" not-null="true"/>
             <one-to-many class="com.llisovichok.models.Message"/>
         </set>
@@ -41,7 +41,7 @@
         <many-to-one
                 name="photo"
                 class="com.llisovichok.lessons.clinic.PetPhoto"
-                cascade="all"
+                cascade="all-delete-orphan"
                 column="id_pet_photo"
                 unique="true"
                 fetch="join"
