@@ -35,7 +35,7 @@ public class AddInfoServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String idParam = req.getParameter("id");
+        String idParam = req.getParameter("pet_id");
         Integer id = Integer.valueOf(idParam);
         Part filePart = req.getPart("photo");
         byte[] data = new byte[1024];
@@ -53,8 +53,8 @@ public class AddInfoServlet extends HttpServlet{
             byte[] buffer = baos.toByteArray();
             //ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
 
-            //JDBC_STORAGE.addPhotoWithHibernate(id, bais, byteArraySize);
-            //HIBERNATE_STORAGE.addPhotoWithHibernate(id, bais, byteArraySize);
+            //JDBC_STORAGE.addPhoto(id, bais, byteArraySize);
+            //HIBERNATE_STORAGE.addPhoto(id, bais, byteArraySize);
             HIBERNATE_STORAGE.addPhotoWithHibernate(id, buffer);
 
             //bais.close();

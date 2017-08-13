@@ -1,6 +1,7 @@
 package com.llisovichok.storages;
 
 import com.llisovichok.lessons.clinic.Pet;
+import com.llisovichok.lessons.clinic.PetPhoto;
 import com.llisovichok.models.Message;
 import com.llisovichok.models.Role;
 import com.llisovichok.models.User;
@@ -23,6 +24,7 @@ public class HibernateStorageTest {
     private final static Message m1 = new Message("first");
     private final static Message m2 = new Message("second");
     private final static Set<Message> messages = new HashSet<>();
+    private final static String PATH = "C:\\Users\\homeuser.1-HP\\Pictures\\47122310-landscape-pictures.jpg";
 
     private User createUser1() {
         User u = new User("Test", "Test", "Test", 1201251455454L,
@@ -70,6 +72,27 @@ public class HibernateStorageTest {
         return true;
     }
 
+    private byte[] getImageBytes(final String path){
+        try(FileInputStream fis = new FileInputStream(path);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();) {
+
+            byte[] data = new byte[1024];
+            int nRead = 0;
+
+            while ((nRead = fis.read(data, 0, data.length)) != -1) {
+                baos.write(data, 0, nRead);
+            }
+
+            baos.flush();
+            int byteArraySize = baos.size();
+
+            return baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        throw new IllegalStateException("Couldn't  get image bytes");
+    }
+
     @Test
     public void getInstance() throws Exception {
         assertTrue(H_STORAGE != null);
@@ -102,9 +125,9 @@ public class HibernateStorageTest {
         }
     }
 
-    @Test
-    public void add() throws Exception {
 
+    @Test
+    public void addUser() throws Exception {
         Integer id  = H_STORAGE.addUser(this.createUser1());
         System.out.println("Id : " + id);
         assertTrue(id > 0);
@@ -121,6 +144,25 @@ public class HibernateStorageTest {
         H_STORAGE.editUser(id, retrieved);
 
         retrieved  = H_STORAGE.getUser(id);
+
+        assertEquals(true, this.checkUser1(retrieved));
+    }
+
+    @Test
+    public void addUserWithPhotoAndMessages() throws Exception {
+        User user = this.createUser1();
+        Message m = new Message("first");
+        Message mes = new Message("second");
+        Set<Message> mess = new HashSet<>();
+        mess.add(m);
+        mess.add(mes);
+        user.setMessages(mess);
+        PetPhoto photo = new PetPhoto(getImageBytes(PATH));
+        user.getPet().setPhoto(photo);
+
+        Integer userId = H_STORAGE.addUser(user);
+
+        User retrieved = H_STORAGE.getUser(userId);
 
         assertEquals(true, this.checkUser1(retrieved));
     }
@@ -183,8 +225,19 @@ public class HibernateStorageTest {
 
         ArrayList<User> users_before = (ArrayList<User>)H_STORAGE.values();
 
-        Integer id1 = H_STORAGE.addUser(createUser1());
-        Integer id2 = H_STORAGE.addUser(createUser2());
+        Set<Message> mes = new HashSet<>();
+        mes.add(new Message("1"));
+        mes.add(new Message("2"));
+        mes.add(new Message("3"));
+        User user_1 = createUser1();
+        user_1.setMessages(mes);
+
+        Set<Message> mes2 = new HashSet<>();
+        mes2.add(new Message("55"));
+        User user_2 = createUser2();
+        user_2.setMessages(mes2);
+        Integer id1 = H_STORAGE.addUser(user_1);
+        Integer id2 = H_STORAGE.addUser(user_2);
 
         ArrayList<User> users_current = (ArrayList<User>)H_STORAGE.values();
         assertTrue(users_current.size() > users_before.size());
@@ -192,7 +245,33 @@ public class HibernateStorageTest {
         H_STORAGE.removeUser(id2);
         ArrayList<User> users_after = (ArrayList<User>)H_STORAGE.values();
         assertTrue(users_after.size() == users_before.size());
+    }
 
+    @Test
+    public void removeUserWithPetPhoto() throws Exception{
+
+        Integer userId = H_STORAGE.addUser(createUser1());
+
+        User user = H_STORAGE.getUser(userId);
+
+        Integer petId = user.getPet().getId();
+
+        byte[] imageBytes = getImageBytes(PATH);
+
+        H_STORAGE.addPhotoWithHibernate(petId, imageBytes);
+
+        Set<Message> mes = new HashSet<>();
+        mes.add(new Message("1"));
+        mes.add(new Message("2"));
+        mes.add(new Message("3"));
+
+        user.setMessages(mes);
+
+        H_STORAGE.editUser(userId, user);
+
+        user = H_STORAGE.getUser(userId);
+
+        H_STORAGE.removeUser(userId);
     }
 
     @Test
@@ -299,71 +378,44 @@ public class HibernateStorageTest {
         Integer id = H_STORAGE.addUser(createUser2());
         Integer petId = H_STORAGE.getUser(id).getPet().getId();
         System.out.println("Id " + petId);
+        H_STORAGE.addPhotoWithHibernate(petId, getImageBytes(PATH));
         Pet pet = H_STORAGE.getPetById(petId);
         assertEquals("Harpy", pet.getName());
         assertEquals("harpy", pet.getKind());
         assertEquals(5, pet.getAge());
+        assertTrue(pet.getPhoto() != null);
     }
 
     @Test
     public void addPhoto() throws Exception{
-        ByteArrayInputStream bais = null;
-        try(FileInputStream fis = new FileInputStream("C:\\Users\\homeuser.1-HP\\Pictures\\47122310-landscape-pictures.jpg");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();) {
 
-            byte[] data = new byte[1024];
-            int nRead = 0;
+        byte[] imageBytes = getImageBytes(PATH);
 
-            while ((nRead = fis.read(data, 0, data.length)) != -1) {
-                baos.write(data, 0, nRead);
-            }
+        try(ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes)){
 
-            baos.flush();
-            int byteArraySize = baos.size();
-
-            byte[] buffer = baos.toByteArray();
-            bais = new ByteArrayInputStream(buffer);
-
-            int id = H_STORAGE.addUser(this.createUser1());
-
-            H_STORAGE.addPhoto(id, bais, byteArraySize);
+            Integer id = H_STORAGE.addUser(this.createUser1());
+            H_STORAGE.addPhoto(id, bais, imageBytes.length);
 
         } catch(IOException e){
             e.printStackTrace();
-        } finally{
-            if(bais != null) bais.close();
         }
     }
 
     @Test
     public void addPhotoWithHibernate() throws Exception {
 
-        File image = new File("C:\\Users\\homeuser.1-HP\\Pictures\\47122310-landscape-pictures.jpg");
-        byte[] photoBuffer = null;
-        try (FileInputStream fis = new FileInputStream(image)) {
-            long size = image.length();
-            photoBuffer = new byte[(int) size];
-            int byteRead;
-            do {
-                byteRead = fis.read(photoBuffer);
-            }
-            while (byteRead != -1);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        byte[] imageBytes = getImageBytes(PATH);
 
         Integer id = H_STORAGE.addUser(createUser1());
 
-        if(photoBuffer != null){
-            H_STORAGE.addPhotoWithHibernate(id, photoBuffer);
-        }
+        User user = H_STORAGE.getUser(id);
 
-        Integer petId = H_STORAGE.getUser(id).getPet().getId();
+        Integer petId = user .getPet().getId();
+
+        H_STORAGE.addPhotoWithHibernate(petId, imageBytes);
 
         Pet pet  = H_STORAGE.getPetById(petId);
-        System.out.println(image.length());
-        System.out.println(pet.getPhoto().getImage().length);
-        assertTrue(image.length() == pet.getPhoto().getImage().length);
+
+        assertTrue(imageBytes.length == pet.getPhoto().getImage().length);
     }
 }

@@ -34,6 +34,7 @@
 <div id="content">
     <form action="${pageContext.servletContext.contextPath}/user/addinfo" method="POST" enctype="multipart/form-data" class="feedback-form-1">
         <input type="hidden" name="id" value="${user.getId()}">
+        <input type="hidden" name="pet_id" value="${user.getPet().getId()}">
 
             <fieldset>
 

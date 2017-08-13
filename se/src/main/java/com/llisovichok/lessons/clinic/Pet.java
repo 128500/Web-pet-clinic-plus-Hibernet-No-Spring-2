@@ -107,6 +107,7 @@ public class Pet implements Serializable {
 				", name='" + name + '\'' +
 				", kind='" + kind + '\'' +
 				", age=" + age +
+				", photo=" + photo +
 				", detailedInfo=" + detailedInfo +
 				'}';
 	}

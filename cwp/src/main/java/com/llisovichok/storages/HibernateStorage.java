@@ -28,6 +28,7 @@ public class HibernateStorage implements HiberStorage {
 
     private static final HibernateStorage INSTANCE = new HibernateStorage();
 
+
     private static SessionFactory factory;
 
     static {
@@ -41,6 +42,10 @@ public class HibernateStorage implements HiberStorage {
             System.err.println("Initial SessionFactory creation failed" + th);
             throw new ExceptionInInitializerError(th);
         }
+    }
+
+    public static SessionFactory getFactory() {
+        return factory;
     }
 
     public static HibernateStorage getInstance() {
@@ -108,11 +113,21 @@ public class HibernateStorage implements HiberStorage {
      * @param user an object of User.class that must be saved
      */
     @Override
-    public void editUser(Integer id, final User user) {
+    public void editUser(final Integer id, final User user) {
         user.setId(id);
         transaction(
                 (Session session) -> {
-                    session.saveOrUpdate(user);
+                    User retrievedUser = session.load(User.class, id);
+                    retrievedUser.setFirstName(user.getFirstName());
+                    retrievedUser.setLastName(user.getLastName());
+                    retrievedUser.setAddress(user.getAddress());
+                    retrievedUser.setPhoneNumber(user.getPhoneNumber());
+                    retrievedUser.getPet().setName(user.getPet().getName());
+                    retrievedUser.getPet().setKind(user.getPet().getKind());
+                    retrievedUser.getPet().setAge(user.getPet().getAge());
+                    retrievedUser.getMessages().addAll(user.getMessages());
+                    retrievedUser.getRole().setName(user.getRole().getName());
+                    session.saveOrUpdate(retrievedUser);
                     return null;
                 }
         );
@@ -128,7 +143,12 @@ public class HibernateStorage implements HiberStorage {
     @Override
     public User getUser(Integer id) {
         User user;
-        user = transaction(session -> session.get(User.class, id));
+        user = (User)transaction(session -> {
+            Query query = session.createQuery("from User user join fetch user.pet " +
+                    "join fetch user.role where user.id= :id");
+            query.setParameter("id", id);
+            return query.list().iterator().next();
+        });
         if (user != null) return user;
         else throw new IllegalStateException("Couldn't find data with such 'id'");
     }
@@ -141,10 +161,8 @@ public class HibernateStorage implements HiberStorage {
     @Override
     public void removeUser(Integer userId) {
         transaction(session -> {
-            Query query = session.createQuery
-                    ("DELETE com.llisovichok.models.User user WHERE user.id = :id");
-            query.setParameter("id", userId);
-            query.executeUpdate();
+            User user = session.load(User.class, userId);
+            if(user != null) session.delete(user);
             return null;
         });
     }
@@ -175,13 +193,13 @@ public class HibernateStorage implements HiberStorage {
 
     /**
      * Adds a photo of a pet to the database
-     * @param id - id of a user to whom pet it need to be set a photo
+     * @param id - id of a pet it need to be set a photo
      * @param photo - binary photograph data as an array of bytes
      */
     @Override
     public void addPhotoWithHibernate(Integer id, byte[] photo){
-        User user = getUser(id);
-        Pet pet = user.getPet();
+        //User user = getUser(id);
+        Pet pet = getPetById(id);
         PetPhoto petPhoto = new PetPhoto(photo);
         petPhoto.setPet(pet);
         pet.setPhoto(petPhoto);
@@ -200,7 +218,7 @@ public class HibernateStorage implements HiberStorage {
     @Override
     public Pet getPetById(final Integer id){
         return (Pet)transaction((Session session) -> session.createQuery("FROM Pet pet " +
-                "WHERE pet.id = :id")
+                "LEFT JOIN FETCH pet.photo WHERE pet.id = :id")
                 .setParameter("id", id)
                 .list()
                 .iterator()

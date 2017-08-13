@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.llisovichok.lessons.clinic">
+    <class name="PetPhoto" table="PHOTO_T">
+        <meta attribute="class-description">
+            This class contains the pet photograph detail.
+        </meta>
+        <id name="id" type="java.lang.Integer" column="pet_photo_id">
+            <generator class="native"/>
+        </id>
+        <property name="image" column="image" type="binary"/>
+        <!--one-to-one name="pet" class="com.llisovichok.lessons.clinic.Pet"/-->
+    </class>
+
+</hibernate-mapping>

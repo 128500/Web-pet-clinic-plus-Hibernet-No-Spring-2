@@ -9,7 +9,7 @@
             This class contains the user's role detail.
         </meta>
         <id name="id" type="java.lang.Integer" column="role_id">
-            <generator class="sequence"/>
+            <generator class="native"/>
         </id>
         <property name="name" column="name" type="string"/>
     </class>

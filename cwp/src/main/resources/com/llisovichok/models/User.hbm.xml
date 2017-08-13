@@ -9,7 +9,7 @@
             This class contains the user detail.
         </meta>
         <id name="id" type="java.lang.Integer" column="user_id">
-            <generator class="sequence"/>
+            <generator class="native"/>
         </id>
         <discriminator column="type" type="java.lang.String"/>
         <property name="firstName" column="first_name" type="string"/>
@@ -17,35 +17,16 @@
         <property name="address" column="address" type="string"/>
         <property name="phoneNumber" column="phone" type="java.lang.Long"/>
 
-        <many-to-one name="pet" column="id_pet" unique="true" cascade="all-delete-orphan" fetch="join"/>
+        <!--many-to-one name="pet" unique="true" cascade="all-delete-orphan"/-->
     </class>
 
     <subclass name="com.llisovichok.models.User" extends="com.llisovichok.lessons.clinic.Client">
-        <many-to-one name="role" column="id_role" unique="true" cascade="all-delete-orphan" fetch="join"/>
+        <many-to-one name="pet" column="pet_id" unique="true" cascade="all-delete-orphan"/>
+        <many-to-one name="role" column="role_id" unique="true" cascade="all-delete-orphan"/>
         <set name="messages" table="message_t" lazy="false" cascade="all-delete-orphan">
             <key column="user_id" not-null="true"/>
             <one-to-many class="com.llisovichok.models.Message"/>
         </set>
     </subclass>
 
-    <class name="com.llisovichok.lessons.clinic.Pet" table="PETS_T">
-        <meta attribute="class-description">
-            This class contains the pet detail.
-        </meta>
-        <id name="id" type="java.lang.Integer" column="pet_id">
-            <generator class="sequence"/>
-        </id>
-        <property name="name" column="nickname" type="string"/>
-        <property name="kind" column="kind" type="string"/>
-        <property name="age" column="age" type="java.lang.Integer"/>
-        <many-to-one
-                name="photo"
-                class="com.llisovichok.lessons.clinic.PetPhoto"
-                cascade="all-delete-orphan"
-                column="id_pet_photo"
-                unique="true"
-                fetch="join"
-                not-found="ignore"
-        />
-    </class>
 </hibernate-mapping>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.llisovichok.lessons.clinic.Pet" table="PETS_T">
+        <meta attribute="class-description">
+            This class contains the pet detail.
+        </meta>
+        <id name="id" type="java.lang.Integer" column="pet_id">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="nickname" type="string"/>
+        <property name="kind" column="kind" type="string"/>
+        <property name="age" column="age" type="java.lang.Integer"/>
+        <many-to-one name="photo"
+                     class="com.llisovichok.lessons.clinic.PetPhoto"
+                     unique="true"
+                     column="pet_photo_id"
+                     cascade="all-delete-orphan"
+                     not-found="ignore"
+        />
+    </class>
+</hibernate-mapping>
