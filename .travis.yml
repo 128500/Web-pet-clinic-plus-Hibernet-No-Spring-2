@@ -1,3 +1,13 @@
 language: java
 notifications:
-email: -llisovichok@gmail.com
+  email:
+    -llisovichok@gmail.com
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+
+addons:
+  postgresql: "9.4"
