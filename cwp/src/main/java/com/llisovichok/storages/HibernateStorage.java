@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * TODO addUser description to addPhotoWithHibernate method, implement method
- * <p>
  * Created by KUDIN ALEKSANDR on 01.07.2017.
  */
 public class HibernateStorage implements HiberStorage {
@@ -114,7 +112,6 @@ public class HibernateStorage implements HiberStorage {
      */
     @Override
     public void editUser(final Integer id, final User user) {
-        user.setId(id);
         transaction(
                 (Session session) -> {
                     User retrievedUser = session.load(User.class, id);
@@ -125,7 +122,9 @@ public class HibernateStorage implements HiberStorage {
                     retrievedUser.getPet().setName(user.getPet().getName());
                     retrievedUser.getPet().setKind(user.getPet().getKind());
                     retrievedUser.getPet().setAge(user.getPet().getAge());
-                    retrievedUser.getMessages().addAll(user.getMessages());
+                    if(user.getMessages() != null){
+                        retrievedUser.getMessages().addAll(user.getMessages());
+                    }
                     retrievedUser.getRole().setName(user.getRole().getName());
                     session.saveOrUpdate(retrievedUser);
                     return null;
@@ -198,7 +197,6 @@ public class HibernateStorage implements HiberStorage {
      */
     @Override
     public void addPhotoWithHibernate(Integer id, byte[] photo){
-        //User user = getUser(id);
         Pet pet = getPetById(id);
         PetPhoto petPhoto = new PetPhoto(photo);
         petPhoto.setPet(pet);

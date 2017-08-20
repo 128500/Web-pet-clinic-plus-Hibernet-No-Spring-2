@@ -3,6 +3,7 @@ package com.llisovichok.models;
 import com.llisovichok.lessons.clinic.Pet;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Set;
 
 
@@ -52,7 +53,8 @@ public class User extends com.llisovichok.lessons.clinic.Client implements Seria
     }
 
     public Set<Message> getMessages() {
-        return messages;
+        if(messages != null) return messages;
+        else return Collections.emptySet();
     }
 
     public void setMessages(Set<Message> messages) {
