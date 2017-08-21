@@ -5,11 +5,11 @@ addons:
 
 postgres:
   adapter: postgresql
-  database: myapp_test
+  database: lessons
   username: postgres
 
 before_script:
-  - "psql -c 'create database myapp_test;' -U postgres"
+  - "psql -c 'create database lessons;' -U postgres"
 
 notifications:
   email:
