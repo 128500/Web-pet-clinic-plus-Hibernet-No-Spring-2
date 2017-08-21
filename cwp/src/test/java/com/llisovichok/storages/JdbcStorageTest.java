@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by ALEKSANDR KUDIN on 25.04.2017.
  */
+@Ignore
 public class JdbcStorageTest extends Mockito {
 
     final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
@@ -37,7 +38,7 @@ public class JdbcStorageTest extends Mockito {
         }
          throw new IllegalStateException("Couldn't get requested connection");
     }
-    @Ignore
+
     @Test
     public void values() throws Exception {
 
@@ -166,7 +167,7 @@ public class JdbcStorageTest extends Mockito {
         JDBC_STORAGE.removeUser(id);
         JDBC_STORAGE.getUser(id);
     }
-    @Ignore
+
     @Test
     public void findUsers() throws Exception {
 
