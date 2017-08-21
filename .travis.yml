@@ -1,8 +1,5 @@
 language: java
 
-services:
-  -postgresql
-
 addons:
  postgresql: "9.6"
 
@@ -13,7 +10,6 @@ postgres:
 
 before_script:
   - "psql -c 'create database myapp_test;' -U postgres"
-  - "rake db:migrate"
 
 notifications:
   email:
