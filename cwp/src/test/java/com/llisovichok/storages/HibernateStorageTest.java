@@ -24,7 +24,7 @@ public class HibernateStorageTest {
     private final static Message m1 = new Message("first");
     private final static Message m2 = new Message("second");
     private final static Set<Message> messages = new HashSet<>();
-    private final static String PATH = "C:\\Users\\homeuser.1-HP\\Pictures\\47122310-landscape-pictures.jpg";
+    private final static String PATH = "C:\\47122310-landscape-pictures.jpg";
 
     private User createUser1() {
         User u = new User("Test", "Test", "Test", 1201251455454L,
