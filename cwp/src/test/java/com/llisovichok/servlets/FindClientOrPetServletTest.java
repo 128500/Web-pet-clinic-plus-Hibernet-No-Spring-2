@@ -2,6 +2,7 @@ package com.llisovichok.servlets;
 
 import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.models.User;
+import com.llisovichok.storages.HibernateStorage;
 import com.llisovichok.storages.JdbcStorage;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class FindClientOrPetServletTest extends Mockito {
 
-    private static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    //private static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    private final static HibernateStorage H_STORAGE = HibernateStorage.getInstance();
 
     @Test
     public void doPost() throws Exception {
@@ -38,8 +40,7 @@ public class FindClientOrPetServletTest extends Mockito {
         verify(req, atLeastOnce()).getRequestDispatcher("/views/user/FailedResultOfSearch.jsp");
 
     }
-    @Ignore
-    @Test
+@Ignore@Test
     public void doPostTest2() throws Exception {
 
         HttpServletRequest req = mock(HttpServletRequest.class);
@@ -48,8 +49,7 @@ public class FindClientOrPetServletTest extends Mockito {
         RequestDispatcher reqDispatcher = mock(RequestDispatcher.class);
 
 
-        int id = JDBC_STORAGE.addUser(new User("Test","test", "test", 00001, new Pet("test", "test", 2)));
-
+        int id = H_STORAGE.addUser(new User("Test","test", "test", 1025, new Pet("test", "test", 2)));
         try {
             when(req.getParameter("input")).thenReturn("Test");
             when(req.getParameter("first_name")).thenReturn("first_name");
@@ -64,7 +64,7 @@ public class FindClientOrPetServletTest extends Mockito {
             verify(req, atLeastOnce()).getRequestDispatcher("/views/user/ResultOfSearching.jsp");
 
         } finally{
-            JDBC_STORAGE.removeUser(id);
+            H_STORAGE.removeUser(id);
         }
     }
 }
