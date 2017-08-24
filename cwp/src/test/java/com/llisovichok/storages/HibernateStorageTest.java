@@ -74,7 +74,7 @@ public class HibernateStorageTest {
 
     private byte[] getImageBytes(final String path){
         try(FileInputStream fis = new FileInputStream(path);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
             byte[] data = new byte[1024];
             int nRead = 0;
@@ -410,7 +410,7 @@ public class HibernateStorageTest {
 
         User user = H_STORAGE.getUser(id);
 
-        Integer petId = user .getPet().getId();
+        Integer petId = user.getPet().getId();
 
         H_STORAGE.addPhotoWithHibernate(petId, imageBytes);
 
