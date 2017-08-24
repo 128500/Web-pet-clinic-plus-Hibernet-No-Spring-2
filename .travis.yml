@@ -4,6 +4,12 @@ sudo: false
 
 install: true
 
+jdk: oraclejdk8
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+
 addons:
  postgresql: "9.6"
 
