@@ -10,6 +10,7 @@ import junit.framework.AssertionFailedError;
 import org.junit.Test;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,8 +25,12 @@ public class HibernateStorageTest {
     private final static Message m1 = new Message("first");
     private final static Message m2 = new Message("second");
     private final static Set<Message> messages = new HashSet<>();
-    private final static String PATH = "D:\\photo\\2011_07_04\\IMG_1179.JPG";
+    private final static String URL_PATH = "http://www.avajava.com/images/avajavalogo.jpg";
+    private final static byte [] imageBytes;
 
+    static {
+       imageBytes = getImageBytes(URL_PATH);
+    }
     private User createUser1() {
         User u = new User("Test", "Test", "Test", 1201251455454L,
                 new Pet("Test", "test",3));
@@ -72,14 +77,15 @@ public class HibernateStorageTest {
         return true;
     }
 
-    private byte[] getImageBytes(final String path){
-        try(FileInputStream fis = new FileInputStream(path);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-
+    private static byte[] getImageBytes(final String urlPath){
+        InputStream is = null;
+        try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            URL url = new URL(urlPath);
+            is  = url.openStream();
             byte[] data = new byte[1024];
             int nRead = 0;
 
-            while ((nRead = fis.read(data, 0, data.length)) != -1) {
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
                 baos.write(data, 0, nRead);
             }
 
@@ -89,6 +95,13 @@ public class HibernateStorageTest {
             return baos.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        finally{
+            try{
+                if(is != null) is.close();
+            } catch (IOException ex){
+                ex.printStackTrace();
+            }
         }
         throw new IllegalStateException("Couldn't  get image bytes");
     }
@@ -157,7 +170,7 @@ public class HibernateStorageTest {
         mess.add(m);
         mess.add(mes);
         user.setMessages(mess);
-        PetPhoto photo = new PetPhoto(getImageBytes(PATH));
+        PetPhoto photo = new PetPhoto(imageBytes);
         user.getPet().setPhoto(photo);
 
         Integer userId = H_STORAGE.addUser(user);
@@ -255,8 +268,6 @@ public class HibernateStorageTest {
         User user = H_STORAGE.getUser(userId);
 
         Integer petId = user.getPet().getId();
-
-        byte[] imageBytes = getImageBytes(PATH);
 
         H_STORAGE.addPhotoWithHibernate(petId, imageBytes);
 
@@ -378,7 +389,7 @@ public class HibernateStorageTest {
         Integer id = H_STORAGE.addUser(createUser2());
         Integer petId = H_STORAGE.getUser(id).getPet().getId();
         System.out.println("Id " + petId);
-        H_STORAGE.addPhotoWithHibernate(petId, getImageBytes(PATH));
+        H_STORAGE.addPhotoWithHibernate(petId, imageBytes);
         Pet pet = H_STORAGE.getPetById(petId);
         assertEquals("Harpy", pet.getName());
         assertEquals("harpy", pet.getKind());
@@ -388,8 +399,6 @@ public class HibernateStorageTest {
 
     @Test
     public void addPhoto() throws Exception{
-
-        byte[] imageBytes = getImageBytes(PATH);
 
         try(ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes)){
 
@@ -403,8 +412,6 @@ public class HibernateStorageTest {
 
     @Test
     public void addPhotoWithHibernate() throws Exception {
-
-        byte[] imageBytes = getImageBytes(PATH);
 
         Integer id = H_STORAGE.addUser(createUser1());
 
