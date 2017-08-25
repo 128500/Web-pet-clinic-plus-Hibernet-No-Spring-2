@@ -9,6 +9,13 @@
 Travis CI passed
 [![Build Status](https://travis-ci.org/128500/Web-pet-clinic-plus-Hibernet-No-Spring-2.svg?branch=master)](https://travis-ci.org/128500/Web-pet-clinic-plus-Hibernet-No-Spring-2)
 
+
+**Editing page with pet's photo**
+
+![Editing page with pet's photo](https://user-images.githubusercontent.com/23385984/29728984-000030d8-89e3-11e7-9f8b-4828d319d00c.png)
+
+
+
 **Viewing page**
 
 ![Viewing page](https://cloud.githubusercontent.com/assets/23385984/26190459/48e377b2-3bb2-11e7-98f3-e84afddce3ac.png)
