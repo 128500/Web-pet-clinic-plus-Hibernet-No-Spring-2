@@ -1,6 +1,8 @@
 package com.llisovichok.servlets;
 
 import com.llisovichok.lessons.clinic.Pet;
+import com.llisovichok.models.Role;
+import com.llisovichok.storages.HibernateStorage;
 import com.llisovichok.storages.JdbcStorage;
 import com.llisovichok.models.User;
 import org.junit.Ignore;
@@ -19,7 +21,8 @@ import static org.junit.Assert.assertEquals;
 public class EditUserServletTest extends Mockito {
 
     //final static UserData USER_DATA = UserData.getInstance();
-    final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    //final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    private final  static HibernateStorage H_STORAGE = HibernateStorage.getInstance();
 
 
     @Test
@@ -27,9 +30,10 @@ public class EditUserServletTest extends Mockito {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         User user = new User("Test", "Test", "Test", 1245, new Pet("Test", "test", 1245));
-        //USER_DATA.addUser(123456, user);
-        //System.out.println(USER_DATA.getUser(123456).toString());
-        int id = JDBC_STORAGE.addUser(user);
+        user.setRole(new Role("user"));
+
+        Integer id = H_STORAGE.addUser(user);
+
 
         when(request.getParameter("id")).thenReturn(String.valueOf(id));
         when(request.getParameter("client first name")).thenReturn("Altered");
@@ -51,7 +55,7 @@ public class EditUserServletTest extends Mockito {
         verify(request, atLeastOnce()).getParameter("pet kind");
         verify(request, atLeastOnce()).getParameter("pet name");
 
-        User altered  = JDBC_STORAGE.getUser(id);
+        User altered  = H_STORAGE.getUser(id);
 
         assertEquals("Altered", altered.getFirstName());
         assertEquals("Altered", altered.getLastName());
@@ -61,11 +65,6 @@ public class EditUserServletTest extends Mockito {
         assertEquals("altered", altered.getPet().getKind());
         assertEquals("Altered", altered.getPet().getName());
 
-        //System.out.println(USER_DATA.getUser(123456).toString());
-
-        //USER_DATA.getUsers().clear();
-
-        JDBC_STORAGE.removeUser(id);
     }
 
     @Ignore

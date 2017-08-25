@@ -2,9 +2,7 @@ package com.llisovichok.storages;
 
 import com.llisovichok.models.User;
 
-import java.awt.*;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,8 +32,8 @@ public class MemoryStorage implements Storage {
 
 
     @Override
-    public void editUser(final Integer id, final User user) {
-
+    public boolean editUser(final Integer id, final User user) {
+        return false;
     }
 
     @Override

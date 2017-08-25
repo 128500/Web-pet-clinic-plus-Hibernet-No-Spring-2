@@ -15,7 +15,7 @@ public interface Storage {
 
     int addUser(User user);
 
-    void editUser(Integer id, User user);
+    boolean editUser(Integer id, User user);
 
     ConcurrentHashMap<Integer, User> getUsers();
 

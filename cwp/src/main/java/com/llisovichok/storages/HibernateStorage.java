@@ -9,14 +9,10 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.criterion.*;
-import org.hibernate.sql.JoinType;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -106,13 +102,12 @@ public class HibernateStorage implements HiberStorage {
 
     /**
      * Edits current data of the user
-     *
-     * @param id   - user's id number
+     *  @param id   - user's id number
      * @param user an object of User.class that must be saved
      */
     @Override
-    public void editUser(final Integer id, final User user) {
-        transaction(
+    public boolean editUser(final Integer id, final User user) {
+        return transaction(
                 (Session session) -> {
                     User retrievedUser = session.load(User.class, id);
                     retrievedUser.setFirstName(user.getFirstName());
@@ -127,7 +122,7 @@ public class HibernateStorage implements HiberStorage {
                     }
                     retrievedUser.getRole().setName(user.getRole().getName());
                     session.saveOrUpdate(retrievedUser);
-                    return null;
+                    return true;
                 }
         );
     }

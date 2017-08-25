@@ -206,8 +206,8 @@ public class HibernateStorageTest {
         messages.add(m2);
         retrieved.setMessages(messages);
 
-        H_STORAGE.editUser(id, retrieved);
-
+        boolean check = H_STORAGE.editUser(id, retrieved);
+        assertTrue(check);
         retrieved  = H_STORAGE.getUser(id);
         assertEquals(true, checkChangedUser(retrieved));
     }

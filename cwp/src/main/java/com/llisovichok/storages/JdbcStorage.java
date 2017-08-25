@@ -114,7 +114,7 @@ public class JdbcStorage implements Storage {
     }
 
     @Override
-    public void editUser(final Integer id, final User user) {
+    public boolean editUser(final Integer id, final User user) {
 
         try (final PreparedStatement clientStatement = this.connection.prepareStatement("UPDATE clients SET first_name=?, last_name=?, address=?, phone=? WHERE public.clients.uid=?");
              final PreparedStatement petStatement= this.connection.prepareStatement("UPDATE pets SET nickname=?, kind=?, age=? WHERE public.pets.client_id=?;")){
@@ -124,13 +124,15 @@ public class JdbcStorage implements Storage {
             clientStatement.setString(3, user.getAddress());
             clientStatement.setLong(4, user.getPhoneNumber());
             clientStatement.setInt(5, id);
-            clientStatement.executeUpdate();
+            int clistat = clientStatement.executeUpdate();
 
             petStatement.setString(1, user.getPet().getName());
             petStatement.setString(2, user.getPet().getKind());
             petStatement.setInt(3,user.getPet().getAge());
             petStatement.setInt(4, id);
-            petStatement.executeUpdate();
+            int petstat = petStatement.executeUpdate();
+            if(clistat > 0 && petstat > 0)return true;
+            else return false;
 
         } catch(SQLException e) {
             e.getSQLState();

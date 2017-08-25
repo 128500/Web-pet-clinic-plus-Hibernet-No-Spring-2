@@ -32,9 +32,8 @@ public class UserCache implements Storage {
     }
 
     @Override
-    public void editUser(final Integer id, final User user) {
-        this.memoryStorage.editUser(id, user);
-
+    public boolean editUser(final Integer id, final User user) {
+        return this.memoryStorage.editUser(id, user);
     }
 
     @Override
