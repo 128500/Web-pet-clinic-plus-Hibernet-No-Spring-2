@@ -67,5 +67,14 @@
     <url-pattern>/user/find/</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>ShowImageServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.ShowImageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ShowImageServlet</servlet-name>
+    <url-pattern>/show_image/*</url-pattern>
+  </servlet-mapping>
+
 </web-app>
 

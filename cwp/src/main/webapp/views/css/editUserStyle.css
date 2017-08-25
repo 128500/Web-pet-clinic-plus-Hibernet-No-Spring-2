@@ -58,6 +58,15 @@
     float: left;
 }
 
+#pet_image{
+    padding: 5px 150px 5px 380px;
+}
+
+#pet_photo{
+    height: 200px;
+    width: 200px;
+}
+
 #footer{
     background-color: #BDDFAB;
     margin-top: 5px;

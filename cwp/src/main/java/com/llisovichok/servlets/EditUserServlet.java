@@ -1,5 +1,6 @@
 package com.llisovichok.servlets;
 
+import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.models.User;
 import com.llisovichok.storages.HibernateStorage;
 
@@ -34,7 +35,11 @@ public class EditUserServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //req.setAttribute("user", JDBC_STORAGE.getUser(Integer.valueOf(req.getParameter("id"))));
-        req.setAttribute("user", HIBERNATE_STORAGE.getUser(Integer.valueOf(req.getParameter("id"))));
+        User user = HIBERNATE_STORAGE.getUser(Integer.valueOf(req.getParameter("id")));
+        req.setAttribute("user", user);
+        Integer petId = user.getPet().getId();
+        Pet pet = HIBERNATE_STORAGE.getPetById(petId);
+        if(pet.getPhoto() != null) req.setAttribute("pet", pet);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/EditUser.jsp");
         dispatcher.forward(req, resp);
     }
