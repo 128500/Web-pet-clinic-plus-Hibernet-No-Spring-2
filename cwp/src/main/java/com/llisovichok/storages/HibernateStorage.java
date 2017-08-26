@@ -17,6 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by KUDIN ALEKSANDR on 01.07.2017.
+ *
+ * This class contains methods (CRUD) to interact with the
+ * database via Hibernate framework
  */
 public class HibernateStorage implements HiberStorage {
 

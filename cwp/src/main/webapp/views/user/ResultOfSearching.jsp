@@ -1,6 +1,6 @@
 <%--
   Created by IntelliJ IDEA.
-  User: дом
+  User: ALEKSANDR KUDIN
   Date: 22.03.2017
   Time: 20:09
   To change this template use File | Settings | File Templates.
@@ -55,6 +55,7 @@
                 <a href="${pageContext.servletContext.contextPath}/user/addinfo?id=${user.getId()}" title="Add info to profile" class="hovertip"><img src="${pageContext.servletContext.contextPath}/views/images/add.png" alt=""></a>
                 <a href="${pageContext.servletContext.contextPath}/user/edit?id=${user.getId()}" title="Edit profile" class="hovertip"><img src="${pageContext.servletContext.contextPath}/views/images/edit.png" alt=""></a>
                 <a href="${pageContext.servletContext.contextPath}/user/delete?id=${user.getId()}" title="Delete profile" class="hovertip"><img src="${pageContext.servletContext.contextPath}/views/images/delete.png" alt=""></a>
+                <a href="${pageContext.servletContext.contextPath}/user/view_messages?id=${user.getId()}" title="View user messages" class="hovertip"><img src="${pageContext.servletContext.contextPath}/views/images/edit.png" alt=""></a>
             </td>
         </tr>
     </c:forEach>

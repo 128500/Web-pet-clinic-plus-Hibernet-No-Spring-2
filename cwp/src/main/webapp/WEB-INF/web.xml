@@ -76,5 +76,13 @@
     <url-pattern>/show_image/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>ViewMessagesServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.ViewMessagesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ViewMessagesServlet</servlet-name>
+    <url-pattern>/user/view_messages</url-pattern>
+  </servlet-mapping>
 </web-app>
 
