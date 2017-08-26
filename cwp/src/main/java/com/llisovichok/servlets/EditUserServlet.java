@@ -37,9 +37,6 @@ public class EditUserServlet extends HttpServlet {
         //req.setAttribute("user", JDBC_STORAGE.getUser(Integer.valueOf(req.getParameter("id"))));
         User user = HIBERNATE_STORAGE.getUser(Integer.valueOf(req.getParameter("id")));
         req.setAttribute("user", user);
-        Integer petId = user.getPet().getId();
-        Pet pet = HIBERNATE_STORAGE.getPetById(petId);
-        if(pet.getPhoto() != null) req.setAttribute("pet", pet);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/EditUser.jsp");
         dispatcher.forward(req, resp);
     }

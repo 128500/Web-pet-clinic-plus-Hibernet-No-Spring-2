@@ -33,7 +33,7 @@
 
 <div id="content">
     <div id="pet_image">
-        <img src="${pageContext.servletContext.contextPath}/show_image/${user.getPet().getId()}.jpeg" alt="${pageContext.servletContext.contextPath}/views/images/logo.png" id="pet_photo">
+        <img src="${pageContext.servletContext.contextPath}/show_image/${user.getPet().getId()}.jpeg" alt="Sorry, there is no photo yet" id="pet_photo">
     </div>
 <form action="${pageContext.servletContext.contextPath}/user/edit" method="POST">
     <div class="form_input">
