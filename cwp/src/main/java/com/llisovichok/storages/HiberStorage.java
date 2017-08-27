@@ -7,7 +7,7 @@ import com.llisovichok.lessons.clinic.Pet;
  */
 public interface HiberStorage extends Storage {
 
-    void addPhotoWithHibernate(Integer userId, byte [] photoBytes);
+    boolean addPhotoWithHibernate(Integer userId, byte [] photoBytes);
 
     Pet getPetById(Integer petId);
 

@@ -105,7 +105,5 @@ public class CreateUserServlet extends HttpServlet {
     @Override
     public void destroy(){
         super.destroy();
-        //JDBC_STORAGE.close();
-        HIBERNATE_STORAGE.close();
     }
 }

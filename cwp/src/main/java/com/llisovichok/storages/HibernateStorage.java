@@ -13,6 +13,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -62,7 +63,7 @@ public class HibernateStorage implements HiberStorage {
      * @param command - a reference to generic type class object
      * @param <T>     returning generic type
      * @return an object acquired as a result of the transaction to the database
-     * (may also be 'void' if a transaction returns void)
+     * (may also be 'void' if the transaction returns void)
      */
     private <T> T transaction(Command<T> command) {
         Transaction tx = null;
@@ -139,15 +140,19 @@ public class HibernateStorage implements HiberStorage {
     @SuppressWarnings("unchecked")
     @Override
     public User getUser(Integer id) {
-        User user;
-        user = (User)transaction(session -> {
-            Query query = session.createQuery("from User user join fetch user.pet " +
-                    "join fetch user.role where user.id= :id");
-            query.setParameter("id", id);
-            return query.list().iterator().next();
-        });
-        if (user != null) return user;
-        else throw new IllegalStateException("Couldn't find data with such 'id'");
+
+        try {
+            return (User) transaction(session -> {
+                Query query = session.createQuery("from User user join fetch user.pet " +
+                        "join fetch user.role where user.id= :id");
+                query.setParameter("id", id);
+                return query.list().iterator().next();
+            });
+        } catch(NoSuchElementException e){
+            //need to be added a logger!
+            e.printStackTrace();
+            return new User();
+        }
     }
 
     /**
@@ -194,7 +199,7 @@ public class HibernateStorage implements HiberStorage {
      * @param photo - binary photograph data as an array of bytes
      */
     @Override
-    public void addPhotoWithHibernate(Integer id, byte[] photo){
+    public boolean addPhotoWithHibernate(Integer id, byte[] photo){
         Pet pet = getPetById(id);
         PetPhoto petPhoto = new PetPhoto(photo);
         petPhoto.setPet(pet);
@@ -202,8 +207,9 @@ public class HibernateStorage implements HiberStorage {
 
         transaction((Session session) -> {
             session.saveOrUpdate(pet);
-            return null;
+            return true;
         });
+        return false;
     }
 
     /**
@@ -288,11 +294,10 @@ public class HibernateStorage implements HiberStorage {
     }
 
     /**
-     * Closes current session factory
+     * Not implemented here
      */
     @Override
     public void close() {
-        factory.close();
     }
 
     /* Not implemented here*/

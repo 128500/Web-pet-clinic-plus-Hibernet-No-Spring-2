@@ -126,7 +126,6 @@ public class CreateUserServletTest extends Mockito {
 
         verify(req, atLeastOnce()).getParameterMap();
 
-
         int currentSize2 = H_STORAGE.values().size();
 
         assertTrue(currentSize2 == previousSize2);

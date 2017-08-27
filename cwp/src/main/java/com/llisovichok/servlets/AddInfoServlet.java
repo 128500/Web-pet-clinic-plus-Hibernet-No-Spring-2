@@ -1,5 +1,6 @@
 package com.llisovichok.servlets;
 
+import com.llisovichok.models.User;
 import com.llisovichok.storages.HibernateStorage;
 
 import javax.servlet.RequestDispatcher;
@@ -28,9 +29,15 @@ public class AddInfoServlet extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //req.setAttribute("user", JDBC_STORAGE.getUser(Integer.valueOf(req.getParameter("id"))));
-        req.setAttribute("user", HIBERNATE_STORAGE.getUser(Integer.valueOf(req.getParameter("id"))));
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/AddInfo.jsp");
-        dispatcher.forward(req, resp);
+        User user = HIBERNATE_STORAGE.getUser(Integer.valueOf(req.getParameter("id")));
+        if (user.getId() == null){
+            resp.sendRedirect(String.format("%s%s", req.getContextPath(), "/views/user/NoClientWithSuchId.jsp"));
+        }
+        else {
+            req.setAttribute("user", user);
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/AddInfo.jsp");
+            dispatcher.forward(req, resp);
+        }
     }
 
     @Override
@@ -70,7 +77,5 @@ public class AddInfoServlet extends HttpServlet{
     @Override
     public void destroy(){
         super.destroy();
-        //JDBC_STORAGE.close();
-        HIBERNATE_STORAGE.close();
     }
 }

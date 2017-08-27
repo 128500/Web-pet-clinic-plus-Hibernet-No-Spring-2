@@ -35,7 +35,5 @@ public class ViewMessagesServlet extends HttpServlet{
 
     @Override
     public void destroy(){
-        super.destroy();
-        HIBERNATE_STORAGE.close();
     }
 }
