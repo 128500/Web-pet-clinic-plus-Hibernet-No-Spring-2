@@ -29,8 +29,8 @@ public class AddInfoServletTest extends Mockito {
     private Integer petId;
 
     public AddInfoServletTest(){
-        User user = new User("test", "test", "test", 125L,
-                new Pet("test", "test", 1));
+        User user = new User("Test", "Test", "Test", 1201251455454L,
+                new Pet("Test", "test", 3));
         user.setRole(new Role("user"));
         this.userId = H_STORAGE.addUser(user);
         petId = H_STORAGE.getUser(userId).getPet().getId();
@@ -66,7 +66,7 @@ public class AddInfoServletTest extends Mockito {
         when(reqMock.getRequestDispatcher("/views/user/AddInfo.jsp")).thenReturn(dispMock);
         doNothing().when(dispMock).forward(reqMock, respMock);
         new AddInfoServlet().doGet(reqMock, respMock);
-        verify(reqMock.getRequestDispatcher("/views/user/AddInfo.jsp"));
+        verify(reqMock, times(1)).getRequestDispatcher("/views/user/AddInfo.jsp");
     }
 
     @Test

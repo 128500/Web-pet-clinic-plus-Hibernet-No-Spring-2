@@ -13,7 +13,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -115,7 +114,7 @@ public class HibernateStorageTest {
 
     @Test
     public void values() throws Exception {
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 5; i++){
 
             User user = createUser1();
 
@@ -133,7 +132,7 @@ public class HibernateStorageTest {
         }
 
         ArrayList<User> users = (ArrayList<User>) H_STORAGE.values();
-        assertTrue(users.size() >= 10);
+        assertTrue(users.size() >= 5);
         for(User u : users){
             assertEquals(true, checkUser1(u));
         }
@@ -425,10 +424,5 @@ public class HibernateStorageTest {
         Pet pet  = H_STORAGE.getPetById(petId);
 
         assertTrue(imageBytes.length == pet.getPhoto().getImage().length);
-    }
-
-    @Test(expected=NoSuchElementException.class)
-    public void getUserTestException(){
-        H_STORAGE.getUser(20141);
     }
 }

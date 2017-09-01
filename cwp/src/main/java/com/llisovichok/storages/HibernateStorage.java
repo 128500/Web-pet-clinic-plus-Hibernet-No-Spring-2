@@ -139,8 +139,7 @@ public class HibernateStorage implements HiberStorage {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public User getUser(Integer id) {
-
+    public User getUser(Integer id){
         try {
             return (User) transaction(session -> {
                 Query query = session.createQuery("from User user join fetch user.pet " +
@@ -152,7 +151,7 @@ public class HibernateStorage implements HiberStorage {
             //need to be added a logger!
             e.printStackTrace();
             return new User();
-        }
+       }
     }
 
     /**
