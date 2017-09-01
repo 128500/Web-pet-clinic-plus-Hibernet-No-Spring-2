@@ -113,6 +113,11 @@ public class HibernateStorageTest {
     }
 
     @Test
+    public void getFactory() throws Exception{
+        assertTrue(H_STORAGE.getFactory() != null);
+    }
+
+    @Test
     public void values() throws Exception {
         for(int i = 0; i < 5; i++){
 
@@ -382,6 +387,13 @@ public class HibernateStorageTest {
         /* No matches found */
         users = (ArrayList<User>) H_STORAGE.findUsers("111", false, false, false);
         assertTrue(users.size() == 0);
+    }
+
+
+    @Test
+    public void findUsersIfNoUsersFound() throws Exception{
+       assertTrue(H_STORAGE.findUsers("1111111", true, true, true).isEmpty());
+
     }
 
     @Test
