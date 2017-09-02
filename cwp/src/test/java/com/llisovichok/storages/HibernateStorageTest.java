@@ -108,22 +108,37 @@ public class HibernateStorageTest {
 
     @Test
     public void getInstance() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || getInstance()");
+        System.out.println("\n=========================================================================================");
+
         assertTrue(H_STORAGE != null);
 
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void getFactory() throws Exception{
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || getFactory()");
+        System.out.println("\n=========================================================================================");
+
         assertTrue(H_STORAGE.getFactory() != null);
     }
 
     @Test
     public void values() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || values()");
+        System.out.println("\n=========================================================================================");
+
+        int [] ids = new int[5];
         for(int i = 0; i < 5; i++){
 
             User user = createUser1();
 
             final int id = H_STORAGE.addUser(user);
+            ids[i] = id;
             User retrieved  = H_STORAGE.getUser(id);
 
             m1.setUser(retrieved);
@@ -141,11 +156,16 @@ public class HibernateStorageTest {
         for(User u : users){
             assertEquals(true, checkUser1(u));
         }
+        System.out.println("\n=========================================================================================");
     }
 
 
     @Test
     public void addUser() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || addUser()");
+        System.out.println("\n=========================================================================================");
+
         Integer id  = H_STORAGE.addUser(this.createUser1());
         System.out.println("Id : " + id);
         assertTrue(id > 0);
@@ -164,10 +184,16 @@ public class HibernateStorageTest {
         retrieved  = H_STORAGE.getUser(id);
 
         assertEquals(true, this.checkUser1(retrieved));
+
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void addUserWithPhotoAndMessages() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || addUserWithPhotoAndMessages()");
+        System.out.println("\n=========================================================================================");
+
         User user = this.createUser1();
         Message m = new Message("first");
         Message mes = new Message("second");
@@ -183,10 +209,15 @@ public class HibernateStorageTest {
         User retrieved = H_STORAGE.getUser(userId);
 
         assertEquals(true, this.checkUser1(retrieved));
+
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void edit() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || edit()");
+        System.out.println("\n=========================================================================================");
 
         Integer id = H_STORAGE.addUser(this.createUser1());
 
@@ -215,10 +246,15 @@ public class HibernateStorageTest {
         assertTrue(check);
         retrieved  = H_STORAGE.getUser(id);
         assertEquals(true, checkChangedUser(retrieved));
+
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void getUser() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || getUser()");
+        System.out.println("\n=========================================================================================");
 
         Integer id = H_STORAGE.addUser(this.createUser2());
 
@@ -236,10 +272,15 @@ public class HibernateStorageTest {
         retrieved  = H_STORAGE.getUser(id);
 
         assertEquals(true, checkChangedUser(retrieved));
+
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void removeUser() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || removeUser()");
+        System.out.println("\n=========================================================================================");
 
         ArrayList<User> users_before = (ArrayList<User>)H_STORAGE.values();
 
@@ -263,10 +304,15 @@ public class HibernateStorageTest {
         H_STORAGE.removeUser(id2);
         ArrayList<User> users_after = (ArrayList<User>)H_STORAGE.values();
         assertTrue(users_after.size() == users_before.size());
+
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void removeUserWithPetPhoto() throws Exception{
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || removeUserWithPetPhoto()");
+        System.out.println("\n=========================================================================================");
 
         Integer userId = H_STORAGE.addUser(createUser1());
 
@@ -288,10 +334,15 @@ public class HibernateStorageTest {
         user = H_STORAGE.getUser(userId);
 
         H_STORAGE.removeUser(userId);
+
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void findUsers() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || findUsers()");
+        System.out.println("\n=========================================================================================");
 
         User gordon = createUser1();
         gordon.setFirstName("Sam");
@@ -387,17 +438,28 @@ public class HibernateStorageTest {
         /* No matches found */
         users = (ArrayList<User>) H_STORAGE.findUsers("111", false, false, false);
         assertTrue(users.size() == 0);
+
+        System.out.println("\n=========================================================================================");
     }
 
 
     @Test
     public void findUsersIfNoUsersFound() throws Exception{
-       assertTrue(H_STORAGE.findUsers("1111111", true, true, true).isEmpty());
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || findUsersIfNoUsersFound()");
+        System.out.println("\n=========================================================================================");
 
+        assertTrue(H_STORAGE.findUsers("1111111", true, true, true).isEmpty());
+
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void getPetById() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || getPetById()");
+        System.out.println("\n=========================================================================================");
+
         Integer id = H_STORAGE.addUser(createUser2());
         Integer petId = H_STORAGE.getUser(id).getPet().getId();
         System.out.println("Id " + petId);
@@ -407,10 +469,15 @@ public class HibernateStorageTest {
         assertEquals("harpy", pet.getKind());
         assertEquals(5, pet.getAge());
         assertTrue(pet.getPhoto() != null);
+        System.out.println("\n=========================================================================================");
+
     }
 
     @Test
     public void addPhoto() throws Exception{
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || addPhoto()");
+        System.out.println("\n=========================================================================================");
 
         try(ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes)){
 
@@ -420,10 +487,15 @@ public class HibernateStorageTest {
         } catch(IOException e){
             e.printStackTrace();
         }
+
+        System.out.println("\n=========================================================================================");
     }
 
     @Test
     public void addPhotoWithHibernate() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || addPhotoWithHibernate()");
+        System.out.println("\n=========================================================================================");
 
         Integer id = H_STORAGE.addUser(createUser1());
 
@@ -436,5 +508,8 @@ public class HibernateStorageTest {
         Pet pet  = H_STORAGE.getPetById(petId);
 
         assertTrue(imageBytes.length == pet.getPhoto().getImage().length);
+
+        System.out.println("\n=========================================================================================");
+
     }
 }

@@ -55,11 +55,7 @@ public class CreateUserServlet extends HttpServlet {
 
     private void doAdd(HttpServletRequest req)throws IOException{
         if(req.getParameter("add") != null) {
-            //User user = createUser(req);
-            //System.out.println(user.toString());
-            //USER_DATA.addUser(Integer.valueOf(user.getId()), user);
             User user = createUser(req);
-            //JDBC_STORAGE.addUser(user);
             HIBERNATE_STORAGE.addUser(user);
         }
     }
@@ -95,8 +91,6 @@ public class CreateUserServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //req.setAttribute("users", this.USER_DATA.values());
-        //req.setAttribute("users", JDBC_STORAGE.values());
         req.setAttribute("users", HIBERNATE_STORAGE.values());
         RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/ViewUser.jsp");
         dispatcher.forward(req, resp);
