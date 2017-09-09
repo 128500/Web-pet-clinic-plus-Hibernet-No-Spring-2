@@ -1,6 +1,7 @@
 package com.llisovichok.servlets;
 
-import com.llisovichok.models.User;
+import com.llisovichok.storages.HibernateStorage;
+import com.llisovichok.storages.UserCreationHelper;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -10,41 +11,41 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Created by KUDIN ALEKSANDR on 03.09.2017.
+ * Created by KUDIN ALEKSANDR on 09.09.2017.
  */
-public class ViewUserServletTest extends Mockito {
+public class ViewMessagesServletTest extends Mockito {
+
+    private final static UserCreationHelper CREATION_HELPER = UserCreationHelper.getInstance();
 
     @Test
     public void doGet() throws Exception {
         System.out.println("\n=========================================================================================");
-        System.out.println("Testing  || " + this.getClass().getName() + " || testDoGet()");
+        System.out.println("Testing  || " + this.getClass().getName() + " || doGet()");
         System.out.println("\n=========================================================================================");
 
         HttpServletRequest req = mock(HttpServletRequest.class);
         HttpServletResponse resp = mock(HttpServletResponse.class);
         RequestDispatcher dispatcher = mock(RequestDispatcher.class);
+        HibernateStorage storage = mock(HibernateStorage.class);
 
-        when(req.getRequestDispatcher("/views/user/ViewUser.jsp")).thenReturn(dispatcher);
+        Integer userId = CREATION_HELPER.getUserId();
+        when(req.getParameter("id")).thenReturn(String.valueOf(userId));
+        when(req.getRequestDispatcher("/views/user/ViewMessages.jsp")).thenReturn(dispatcher);
         doNothing().when(dispatcher).forward(req, resp);
 
-        new ViewUserServlet().doGet(req, resp);
+        new ViewMessagesServlet().doGet(req, resp);
 
-        verify(req, atLeastOnce()).setAttribute(eq("users"), anyCollection());
-        verify(req, atLeastOnce()).getRequestDispatcher("/views/user/ViewUser.jsp");
-        verify(dispatcher, atLeastOnce()).forward(req, resp);
-
-        System.out.println("\n###########  DONE ############\n");
-
+        verify(req, atLeastOnce()).getRequestDispatcher("/views/user/ViewMessages.jsp");
     }
+
 
     @Test
-    public void destroy() throws Exception{
+    public void destroy() throws Exception {
         System.out.println("\n=========================================================================================");
-        System.out.println("Testing  || " + this.getClass().getName() + " || testDoGet()");
+        System.out.println("Testing  || " + this.getClass().getName() + " || destroy()");
         System.out.println("\n=========================================================================================");
 
-        new ViewUserServlet().destroy();
-
-        System.out.println("\n###########  DONE ############\n");
+        new ViewMessagesServlet().destroy();
     }
+
 }

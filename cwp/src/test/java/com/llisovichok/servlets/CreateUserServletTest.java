@@ -34,12 +34,12 @@ public class CreateUserServletTest extends Mockito {
     public void doPost() throws Exception {
         System.out.println("\n=========================================================================================");
         System.out.println("Testing  || " + this.getClass().getName() + " || doPost()");
-        System.out.println("\n=========================================================================================");
+        System.out.println("=========================================================================================");
 
 
+        /*Checking the case when all parameters (that are required) present*/
         HttpServletRequest req = mock(HttpServletRequest.class);
         HttpServletResponse resp = mock(HttpServletResponse.class);
-
 
         //int previousSize = JDBC_STORAGE.values().size();
         int previousSize = H_STORAGE.values().size();
@@ -86,6 +86,8 @@ public class CreateUserServletTest extends Mockito {
         }
 
 
+        /*Checking the case when there are not all parameters that are required*/
+
         int previousSize2 = H_STORAGE.values().size();
 
         Map<String, String[]> requestMap = new LinkedHashMap<>();
@@ -115,13 +117,10 @@ public class CreateUserServletTest extends Mockito {
         requestMap.put("addUser", add);
 
         when(req.getParameterMap()).thenReturn(requestMap);
-
+        CreateUserServlet cus = new CreateUserServlet();
         RequestDispatcher dispatcher = mock(RequestDispatcher.class);
 
-        CreateUserServlet cus = new CreateUserServlet();
-
         when(req.getRequestDispatcher("/views/user/WrongParameter.jsp")).thenReturn(dispatcher);
-
         doNothing().when(dispatcher).forward(req, resp);
 
         assertTrue(!cus.checkRequestParameters(req).isEmpty());
@@ -129,12 +128,13 @@ public class CreateUserServletTest extends Mockito {
         cus.doPost(req, resp);
 
         verify(req, atLeastOnce()).getParameterMap();
+        verify(req, atLeastOnce()).getRequestDispatcher("/views/user/WrongParameter.jsp");
 
         int currentSize2 = H_STORAGE.values().size();
 
         assertTrue(currentSize2 == previousSize2);
 
-        System.out.println("\n=========================================================================================");
+        System.out.println("\n########## DONE ##############\n");
 
     }
 
@@ -143,7 +143,7 @@ public class CreateUserServletTest extends Mockito {
     public void checkRequestParameters() throws Exception{
         System.out.println("\n=========================================================================================");
         System.out.println("Testing  || " + this.getClass().getName() + " || checkRequestParameters()");
-        System.out.println("\n=========================================================================================");
+        System.out.println("=========================================================================================");
 
         HttpServletRequest req = mock(HttpServletRequest.class);
 
@@ -189,14 +189,14 @@ public class CreateUserServletTest extends Mockito {
         assertEquals("PET KIND", result.get(5));
         assertEquals("PET AGE", result.get(6));
 
-        System.out.println("\n=========================================================================================");
+        System.out.println("\n###########  DONE ############\n");
     }
 
     @Test
     public void createUser() throws Exception {
         System.out.println("\n=========================================================================================");
         System.out.println("Testing  || " + this.getClass().getName() + " || createUser()");
-        System.out.println("\n=========================================================================================");
+        System.out.println("=========================================================================================");
 
 
         HttpServletRequest req = mock(HttpServletRequest.class);
@@ -227,14 +227,14 @@ public class CreateUserServletTest extends Mockito {
         assertEquals("kind", user.getPet().getKind());
         assertEquals(2, user.getPet().getAge());
 
-        System.out.println("\n=========================================================================================");
+        System.out.println("\n###########  DONE ############\n");
     }
 
     @Test
     public void doGet() throws Exception {
         System.out.println("\n=========================================================================================");
-        System.out.println("Testing  || " + this.getClass().getName() + " || createUser()");
-        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || doGet()");
+        System.out.println("=========================================================================================");
 
         HttpServletRequest req = mock(HttpServletRequest.class);
         HttpServletResponse resp = mock(HttpServletResponse.class);
@@ -245,6 +245,6 @@ public class CreateUserServletTest extends Mockito {
         new CreateUserServlet().doGet(req, resp);
         verify(req, atLeastOnce()).getRequestDispatcher("/views/user/ViewUser.jsp");
 
-        System.out.println("\n=========================================================================================");
+        System.out.println("\n###########  DONE ############\n");
     }
 }

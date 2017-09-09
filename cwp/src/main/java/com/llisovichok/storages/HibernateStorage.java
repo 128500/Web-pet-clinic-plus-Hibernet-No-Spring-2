@@ -24,9 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HibernateStorage implements HiberStorage {
 
-    private static final HibernateStorage INSTANCE = new HibernateStorage();
-
-
+    private static HibernateStorage INSTANCE;
     private static SessionFactory factory;
 
     static {
@@ -47,8 +45,15 @@ public class HibernateStorage implements HiberStorage {
     }
 
     public static HibernateStorage getInstance() {
-        return INSTANCE;
+        if(INSTANCE != null)return INSTANCE;
+        else return new HibernateStorage();
     }
+
+    /*Uses only in test purposes*/
+    public static void setInstance(HibernateStorage storage){
+        INSTANCE = storage;
+    }
+
 
     /*Programming pattern - Command*/
     interface Command<T> {

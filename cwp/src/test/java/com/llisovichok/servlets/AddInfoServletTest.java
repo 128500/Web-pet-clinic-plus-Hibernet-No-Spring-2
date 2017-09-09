@@ -4,10 +4,16 @@ import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.models.Role;
 import com.llisovichok.models.User;
 import com.llisovichok.storages.HibernateStorage;
+import com.llisovichok.storages.UserCreationHelper;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -25,17 +31,16 @@ import static org.junit.Assert.*;
 public class AddInfoServletTest extends Mockito {
 
     private final static HibernateStorage H_STORAGE = HibernateStorage.getInstance();
-    private Integer userId;
-    private Integer petId;
+    private final static UserCreationHelper HELPER = UserCreationHelper.getInstance();
+    private Integer userId = HELPER.getUserId();
+    private Integer petId = HELPER.getPetId();
 
-    public AddInfoServletTest(){
-        User user = new User("Test", "Test", "Test", 1201251455454L,
-                new Pet("Test", "test", 3));
-        user.setRole(new Role("user"));
-        this.userId = H_STORAGE.addUser(user);
-        petId = H_STORAGE.getUser(userId).getPet().getId();
-    }
-
+    /**
+     * Creates an InputStream from an external source predetermined with the URL
+     * The external source is needed for passing tests running by Travis CI (https://travis-ci.org)
+     * @param urlPath the URL path
+     * @return InputStream of image bytes
+     */
     private static InputStream getInputStream(final String urlPath) {
         InputStream is = null;
         try{
@@ -51,6 +56,10 @@ public class AddInfoServletTest extends Mockito {
 
     @Test
     public void doGet() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || testDoGet()");
+        System.out.println("\n=========================================================================================");
+
         HttpServletRequest reqMock = mock(HttpServletRequest.class);
         HttpServletResponse respMock = mock(HttpServletResponse.class);
 
@@ -67,10 +76,16 @@ public class AddInfoServletTest extends Mockito {
         doNothing().when(dispMock).forward(reqMock, respMock);
         new AddInfoServlet().doGet(reqMock, respMock);
         verify(reqMock, times(1)).getRequestDispatcher("/views/user/AddInfo.jsp");
+
+        System.out.println("\n###########  DONE ############\n");
     }
 
     @Test
     public void doPost() throws Exception {
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || testDoPost()");
+        System.out.println("\n=========================================================================================");
+
         HttpServletRequest reqMock = mock(HttpServletRequest.class);
         HttpServletResponse respMock = mock(HttpServletResponse.class);
         Part partMock = mock(Part.class);
@@ -80,12 +95,13 @@ public class AddInfoServletTest extends Mockito {
         RequestDispatcher dispMock = mock(RequestDispatcher.class);
         when(reqMock.getRequestDispatcher("/views/user/SuccessInAddingPhoto.jsp")).thenReturn(dispMock);
         doNothing().when(dispMock).forward(reqMock, respMock);
+
         try(InputStream is = getInputStream("http://www.avajava.com/images/avajavalogo.jpg")){
             when(partMock.getInputStream()).thenReturn(is);
             new AddInfoServlet().doPost(reqMock, respMock);
         }
         assertTrue(H_STORAGE.getPetById(petId).getPhoto().getImage().length > 0);
+
+        System.out.println("\n###########  DONE ############\n");
     }
-
-
 }

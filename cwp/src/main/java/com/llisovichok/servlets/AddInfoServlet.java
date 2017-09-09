@@ -41,37 +41,35 @@ public class AddInfoServlet extends HttpServlet{
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String idParam = req.getParameter("pet_id");
         Integer id = Integer.valueOf(idParam);
-        Part filePart = req.getPart("photo");
-        byte[] data = new byte[1024];
-        int nRead;
-        try (InputStream fileContent = filePart.getInputStream();
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()){
+        try{
+            Part filePart = req.getPart("photo");
+            byte[] data = new byte[1024];
+            int nRead;
 
-            while((nRead = fileContent.read(data, 0, data.length)) != -1){
-                baos.write(data, 0, nRead);
+            try(InputStream fileContent = filePart.getInputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+                while ((nRead = fileContent.read(data, 0, data.length)) != -1) {
+                    baos.write(data, 0, nRead);
+                }
+                baos.flush();
+                //int byteArraySize = baos.size();
+
+                byte[] buffer = baos.toByteArray();
+                //ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+                //JDBC_STORAGE.addPhoto(id, bais, byteArraySize);
+                //HIBERNATE_STORAGE.addPhoto(id, bais, byteArraySize);
+                HIBERNATE_STORAGE.addPhotoWithHibernate(id, buffer);
+
+                RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/SuccessInAddingPhoto.jsp");
+                dispatcher.forward(req, resp);
             }
-
-            baos.flush();
-            int byteArraySize = baos.size();
-
-            byte[] buffer = baos.toByteArray();
-            //ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-
-            //JDBC_STORAGE.addPhoto(id, bais, byteArraySize);
-            //HIBERNATE_STORAGE.addPhoto(id, bais, byteArraySize);
-            HIBERNATE_STORAGE.addPhotoWithHibernate(id, buffer);
-
-            //bais.close();
-
         } catch(IOException e){
             e.printStackTrace();
         }
-
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/SuccessInAddingPhoto.jsp");
-        dispatcher.forward(req, resp);
     }
 
     @Override

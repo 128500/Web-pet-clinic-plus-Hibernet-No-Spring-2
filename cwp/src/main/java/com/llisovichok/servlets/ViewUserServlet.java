@@ -16,12 +16,10 @@ import java.io.IOException;
  */
 public class ViewUserServlet extends HttpServlet {
 
-    //final static UserData USER_DATA = UserData.getInstance();
-    //final static JdbcStorage  JDBC_STORAGE = JdbcStorage.getINSTANCE();
+
     private final static HibernateStorage HIBERNATE_STORAGE = HibernateStorage.getInstance();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //req.setAttribute("users", JDBC_STORAGE.values());
         req.setAttribute("users", HIBERNATE_STORAGE.values());
         RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/ViewUser.jsp");
         dispatcher.forward(req, resp);
