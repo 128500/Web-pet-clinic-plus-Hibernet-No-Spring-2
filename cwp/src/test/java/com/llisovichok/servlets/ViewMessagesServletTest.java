@@ -1,7 +1,7 @@
 package com.llisovichok.servlets;
 
-import com.llisovichok.storages.HibernateStorage;
-import com.llisovichok.storages.UserCreationHelper;
+import com.llisovichok.helper.UserCreationHelper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by KUDIN ALEKSANDR on 09.09.2017.
  */
+
+
 public class ViewMessagesServletTest extends Mockito {
 
     private final static UserCreationHelper CREATION_HELPER = UserCreationHelper.getInstance();
@@ -26,7 +28,6 @@ public class ViewMessagesServletTest extends Mockito {
         HttpServletRequest req = mock(HttpServletRequest.class);
         HttpServletResponse resp = mock(HttpServletResponse.class);
         RequestDispatcher dispatcher = mock(RequestDispatcher.class);
-        HibernateStorage storage = mock(HibernateStorage.class);
 
         Integer userId = CREATION_HELPER.getUserId();
         when(req.getParameter("id")).thenReturn(String.valueOf(userId));
@@ -47,5 +48,4 @@ public class ViewMessagesServletTest extends Mockito {
 
         new ViewMessagesServlet().destroy();
     }
-
 }

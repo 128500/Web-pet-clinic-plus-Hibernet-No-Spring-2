@@ -1,8 +1,14 @@
-package com.llisovichok.storages;
+package com.llisovichok.helper;
 
 import com.llisovichok.lessons.clinic.Pet;
+import com.llisovichok.lessons.clinic.PetPhoto;
+import com.llisovichok.models.Message;
 import com.llisovichok.models.Role;
 import com.llisovichok.models.User;
+import com.llisovichok.storages.HibernateStorage;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by KUDIN ALEKSANDR on 09.09.2017.
@@ -27,9 +33,22 @@ public class UserCreationHelper {
     static{
         User user = new User("Test", "Test", "Test", 1201251455454L,
                 new Pet("Test", "test", 3));
+        user.getPet().setPhoto(new PetPhoto(new byte[] { (byte)0xe0, 0x4f, (byte)0xd0, 0x20,  (byte)0x9d }));
         user.setRole(new Role("user"));
+
         userId = H_STORAGE.addUser(user);
         petId = H_STORAGE.getUser(userId).getPet().getId();
+
+        User retrieved = H_STORAGE.getUser(userId);
+        Set<Message> messages = new HashSet<>();
+        Message messageOne = new Message("first");
+        messageOne.setUser(retrieved);
+        Message messageTwo = new Message("second");
+        messageTwo.setUser(retrieved);
+        messages.add(messageOne);
+        messages.add(messageTwo);
+        retrieved.setMessages(messages);
+        H_STORAGE.editUser(userId, retrieved);
     }
 
     public static UserCreationHelper getInstance(){

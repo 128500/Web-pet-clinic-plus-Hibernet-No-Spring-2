@@ -1,24 +1,16 @@
 package com.llisovichok.servlets;
 
-import com.llisovichok.lessons.clinic.Pet;
-import com.llisovichok.models.Role;
-import com.llisovichok.models.User;
 import com.llisovichok.storages.HibernateStorage;
-import com.llisovichok.storages.UserCreationHelper;
-import org.junit.Rule;
+import com.llisovichok.helper.UserCreationHelper;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -28,6 +20,7 @@ import static org.junit.Assert.*;
 /**
  * Created by KUDIN ALEKSANDR on 27.08.2017.
  */
+
 public class AddInfoServletTest extends Mockito {
 
     private final static HibernateStorage H_STORAGE = HibernateStorage.getInstance();
