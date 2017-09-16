@@ -1,6 +1,6 @@
 package com.llisovichok.servlets;
 
-import com.llisovichok.helper.UserCreationHelper;
+import com.llisovichok.test_helper.UserCreationHelper;
 
 import org.junit.Test;
 import org.mockito.Mockito;

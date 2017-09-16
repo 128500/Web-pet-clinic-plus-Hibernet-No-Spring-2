@@ -46,6 +46,7 @@
         <th>Pet's age</th>
         <th>Options</th>
     </tr>
+    <%--@elvariable id="users" type="java.util.List"--%>
     <c:forEach items="${users}" var="user" varStatus="status">
         <tr>
             <td >${user.getId()}</td>
@@ -61,6 +62,7 @@
                 <a href="${pageContext.servletContext.contextPath}/user/edit?id=${user.getId()}" title="Edit profile" class="hovertip"><img src="${pageContext.servletContext.contextPath}/views/images/edit.png" alt=""></a>
                 <a href="${pageContext.servletContext.contextPath}/user/delete?id=${user.getId()}" title="Delete profile" class="hovertip"><img src="${pageContext.servletContext.contextPath}/views/images/delete.png" alt=""></a>
                 <a href="${pageContext.servletContext.contextPath}/user/view_messages?id=${user.getId()}" title="View users messages" class="hovertip"><img src="${pageContext.servletContext.contextPath}/views/images/edit.png" alt=""></a>
+                <a href="${pageContext.servletContext.contextPath}/user/send_message?id=${user.getId()}" title="Send message to this user" class="hovertip"><img src="${pageContext.servletContext.contextPath}/views/images/edit.png" alt=""></a>
             </td>
         </tr>
     </c:forEach>
@@ -71,6 +73,5 @@
     <p>FOOTER</p>
     <div id="hint"></div>
 </div>
-</form>
 </body>
 </html>

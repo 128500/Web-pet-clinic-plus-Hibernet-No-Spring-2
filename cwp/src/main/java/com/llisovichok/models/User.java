@@ -53,7 +53,7 @@ public class User extends com.llisovichok.lessons.clinic.Client implements Seria
     }
 
     public Set<Message> getMessages() {
-        if(messages != null) return messages;
+        if(this.messages != null) return this.messages;
         else return Collections.emptySet();
     }
 

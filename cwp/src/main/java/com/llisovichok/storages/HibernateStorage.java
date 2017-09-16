@@ -2,6 +2,7 @@ package com.llisovichok.storages;
 
 import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.lessons.clinic.PetPhoto;
+import com.llisovichok.models.Message;
 import com.llisovichok.models.User;
 
 import org.hibernate.*;
@@ -11,9 +12,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import java.io.ByteArrayInputStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -296,6 +295,29 @@ public class HibernateStorage implements HiberStorage {
         if (users != null) return users;
         else return Collections.emptyList();
     }
+
+    /**
+     * Adds a message addressed to a certain user into the database
+     * @param id - user's id to whom the message addressed
+     * @param messageText - a message to store
+     */
+    @Override
+    public void addMessage(final Integer id, final String messageText){
+        Message message = new Message(messageText);
+        transaction(session -> {
+          User user =  session.load(User.class, id);
+          message.setUser(user);
+          if(user.getMessages() != null){
+              user.getMessages().add(message);
+          } else{
+              Set<Message> messages = new HashSet<Message>();
+              messages.add(message);
+              user.setMessages(messages);
+          }
+          session.saveOrUpdate(user);
+          return null;
+        });
+    };
 
     /**
      * Not implemented here

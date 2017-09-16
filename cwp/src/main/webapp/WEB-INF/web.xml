@@ -74,5 +74,14 @@
     <servlet-name>ViewMessagesServlet</servlet-name>
     <url-pattern>/user/view_messages</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SendMessageServlet</servlet-name>
+    <servlet-class>com.llisovichok.servlets.SendMessageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SendMessageServlet</servlet-name>
+    <url-pattern>/user/send_message</url-pattern>
+  </servlet-mapping>
 </web-app>
 

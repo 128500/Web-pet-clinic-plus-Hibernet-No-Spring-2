@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
  * Created by KUDIN ALEKSANDR on 16.07.2017.
  */
 public class HibernateStorageTest {
+
     private final static HibernateStorage H_STORAGE = HibernateStorage.getInstance();
     private final static Message m1 = new Message("first");
     private final static Message m2 = new Message("second");
@@ -153,8 +154,8 @@ public class HibernateStorageTest {
 
         ArrayList<User> users = (ArrayList<User>) H_STORAGE.values();
         assertTrue(users.size() >= 5);
-        for(User u : users){
-            assertEquals(true, checkUser1(u));
+        for(Integer number : ids){
+            assertEquals(true, checkUser1(H_STORAGE.getUser(number)));
         }
         System.out.println("\n=========================================================================================");
     }
@@ -511,5 +512,28 @@ public class HibernateStorageTest {
 
         System.out.println("\n=========================================================================================");
 
+    }
+
+    @Test
+    public void addMessage() throws Exception {
+
+        System.out.println("\n=========================================================================================");
+        System.out.println("Testing  || " + this.getClass().getName() + " || addMessage()");
+        System.out.println("\n=========================================================================================");
+
+        User user = createUser1();
+        Integer id = H_STORAGE.addUser(user);
+
+        H_STORAGE.addMessage(id, "First message");
+
+        user = H_STORAGE.getUser(id);
+        assertEquals("First message", user.getMessages().iterator().next().getText());
+
+        H_STORAGE.addMessage(id, "Second message");
+        user = H_STORAGE.getUser(id);
+
+        for(Message m : user.getMessages()){
+            assertTrue(m.getText().equals("First message") || m.getText().equals("Second message"));
+        }
     }
 }

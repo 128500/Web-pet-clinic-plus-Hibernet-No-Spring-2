@@ -1,5 +1,6 @@
 package com.llisovichok.servlets;
 
+import com.llisovichok.models.Message;
 import com.llisovichok.models.User;
 import com.llisovichok.storages.HibernateStorage;
 
@@ -14,6 +15,9 @@ import javax.servlet.http.Part;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -27,11 +31,10 @@ public class ViewMessagesServlet extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = HIBERNATE_STORAGE.getUser(Integer.valueOf(req.getParameter("id")));
-        req.setAttribute("user", user.getMessages());
+        req.setAttribute("messages", user.getMessages());
         RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/ViewMessages.jsp");
         dispatcher.forward(req, resp);
     }
-
 
     @Override
     public void destroy(){

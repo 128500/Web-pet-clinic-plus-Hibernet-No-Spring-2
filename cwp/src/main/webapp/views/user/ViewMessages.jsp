@@ -6,7 +6,7 @@
 --%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" session ="true"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" session ="true" %>
 <html>
 <head>
     <title>VIEW MESSAGES</title>
@@ -35,9 +35,9 @@
 <div id="content">
 
 <table>
-
+    <%--@elvariable id="messages" type="java.util.ArrayList"--%>
     <c:forEach items="${messages}" var="message" varStatus="status">
-        <tr>${message.getText()}</tr>
+        <tr><td>${message.getText()}</td></tr>
     </c:forEach>
 </table>
 </div>
@@ -46,6 +46,5 @@
     <p>FOOTER</p>
     <div id="hint"></div>
 </div>
-</form>
 </body>
 </html>

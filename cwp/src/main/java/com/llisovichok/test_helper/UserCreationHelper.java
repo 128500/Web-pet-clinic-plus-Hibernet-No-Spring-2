@@ -1,4 +1,4 @@
-package com.llisovichok.helper;
+package com.llisovichok.test_helper;
 
 import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.lessons.clinic.PetPhoto;
@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Created by KUDIN ALEKSANDR on 09.09.2017.
  *
- * This class is a helper class for creation a user
+ * This class is a test_helper class for creation a user
  * for the tests running
  */
 public class UserCreationHelper {

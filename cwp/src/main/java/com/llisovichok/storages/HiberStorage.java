@@ -11,4 +11,6 @@ public interface HiberStorage extends Storage {
 
     Pet getPetById(Integer petId);
 
+    void addMessage(Integer id, String message);
+
 }
