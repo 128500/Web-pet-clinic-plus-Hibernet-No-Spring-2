@@ -11,7 +11,7 @@ Travis CI check passed
 
 
 
-**View messages page looks like"
+**View messages page looks like**
 
 ![11](https://user-images.githubusercontent.com/23385984/30523376-0ab94b5a-9be9-11e7-9bd9-c5d4e8a7547f.png)
 
