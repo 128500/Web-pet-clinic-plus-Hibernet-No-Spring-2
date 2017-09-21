@@ -4,13 +4,21 @@ import com.llisovichok.lessons.clinic.Pet;
 
 import java.io.Serializable;
 
+import javax.persistence.*;
+
 /**
  * Created by KUDIN ALEKSANDR on 02.08.2017.
  */
+@Entity
+@Table(name = "PHOTO_T")
 public class PetPhoto implements Serializable {
 
+    @Id @GeneratedValue
     private Integer id;
+
     private Pet pet;
+
+    @Column(name = "image")
     private byte[] image;
 
     public PetPhoto(){}

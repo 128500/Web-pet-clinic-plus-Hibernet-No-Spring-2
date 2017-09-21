@@ -1,19 +1,28 @@
 package com.llisovichok.models;
 
 import com.llisovichok.lessons.clinic.Pet;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
+import javax.persistence.*;
 
 
 /**
- * Created by ALEKSANDR KUDIN on 23.03.2017.
+ * Created by ALEKSANDR KUDIN on 17.09.2017.
  */
+@Entity
+@Table(name="CLIENTS_T")
 public class User extends com.llisovichok.lessons.clinic.Client implements Serializable {
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name="role_id")
     private Role role;
 
+    @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name="user_id")
     private Set<Message> messages;
 
     public User() {

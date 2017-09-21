@@ -20,10 +20,10 @@
     <property name="hibernate.c3p0.validate">true</property>
 
     <!-- List of XML mapping files -->
-    <mapping resource="com/llisovichok/models/User.hbm.xml"/>
-    <mapping resource="com/llisovichok/models/Pet.hbm.xml"/>
-    <mapping resource="com/llisovichok/models/Role.hbm.xml"/>
-    <mapping resource="com/llisovichok/models/Message.hbm.xml"/>
-    <mapping resource="com/llisovichok/models/PetPhoto.hbm.xml"/>
+    <mapping class="com.llisovichok.lessons.clinic.Pet"/>
+    <mapping class="com.llisovichok.lessons.clinic.PetPhoto"/>
+    <mapping class="com.llisovichok.models.User"/>
+    <mapping class="com.llisovichok.models.Message"/>
+    <mapping class="com.llisovichok.models.Role"/>
 </session-factory>
 </hibernate-configuration>

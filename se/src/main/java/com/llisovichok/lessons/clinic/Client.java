@@ -1,37 +1,35 @@
 package com.llisovichok.lessons.clinic;
 
+
 import java.io.Serializable;
+import javax.persistence.*;
 
 /**
 *This class describes a client and his pet
 */
+
+@MappedSuperclass
 public class Client implements Serializable {
 
+	@Id @GeneratedValue
+	@Column(name="user_id")
 	private Integer id;
 
-	/**
-	*A first name of the client
-	*/
+
+	@Column(name="first_name")
 	private  String firstName;
 
-	/**
-	 * A last name of the client
-	 */
+	@Column(name="last_name")
 	private String lastName;
 
-	/**
-	 * Client's address
-	 */
+	@Column(name="address")
 	private String address;
 
-	/**
-	 * Client's phone number
-	 */
+	@Column(name="phone")
 	private long phoneNumber;
 	
-	/**
-	*A pet that the client has
-	*/
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name="pet_id")
 	private  Pet pet;
 
 	public Client(){}

@@ -2,30 +2,36 @@ package com.llisovichok.lessons.clinic;
 
 import java.io.Serializable;
 
+import javax.persistence.*;
+
 /**
 *This class represents a client's pet
 */
 
+@Entity
+@Table(name = "PETS_T")
 public class Pet implements Serializable {
 
+	@Id @ GeneratedValue
 	private Integer id;
 
-	/* A name of the pet */
+	@Column(name = "nickname")
 	private String name;
 
-	/*A kind of the pet */
+	@Column(name  = "kind")
 	private String kind = "pet";
 
-	/* Age of the pet */
+	@Column(name  = "age")
 	private int age;
 
-	/*Pet's photograph*/
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "pet_photo_id")
 	private PetPhoto photo;
 
 	/**
 	 * Detailed information about the pet, containing health problems description
 	 */
-	private DetailedInfo detailedInfo;
+	//private DetailedInfo detailedInfo;
 
 	public Pet(){}
 
@@ -48,7 +54,6 @@ public class Pet implements Serializable {
 		this.name = name;
 		this.kind = kind;
 		this.age = age;
-		this.detailedInfo = df;
 	}
 
 
@@ -92,13 +97,13 @@ public class Pet implements Serializable {
 		this.kind =kind;
 	}
 
-	public DetailedInfo getDetailedInfo(){
+	/**public DetailedInfo getDetailedInfo(){
 		return this.detailedInfo;
-	}
+	}*/
 
-	public void setDetailedInfo(final  DetailedInfo detailedInfo) {
+	/**public void setDetailedInfo(final  DetailedInfo detailedInfo) {
 		this.detailedInfo = detailedInfo;
-	}
+	}*/
 
 	@Override
 	public String toString() {
@@ -108,7 +113,6 @@ public class Pet implements Serializable {
 				", kind='" + kind + '\'' +
 				", age=" + age +
 				", photo=" + photo +
-				", detailedInfo=" + detailedInfo +
 				'}';
 	}
 }

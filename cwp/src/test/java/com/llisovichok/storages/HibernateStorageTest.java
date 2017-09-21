@@ -121,10 +121,10 @@ public class HibernateStorageTest {
     @Test
     public void getFactory() throws Exception{
         System.out.println("\n=========================================================================================");
-        System.out.println("Testing  || " + this.getClass().getName() + " || getFactory()");
+        System.out.println("Testing  || " + this.getClass().getName() + " || getSessionFactory()");
         System.out.println("\n=========================================================================================");
 
-        assertTrue(H_STORAGE.getFactory() != null);
+        assertTrue(H_STORAGE.getSessionFactory() != null);
     }
 
     @Test

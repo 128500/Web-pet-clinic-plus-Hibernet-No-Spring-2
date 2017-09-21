@@ -1,10 +1,16 @@
 package com.llisovichok.models;
 
+
+import javax.persistence.*;
 /**
  * Created by KUDIN ALEKSANDR on 15.07.2017.
  */
+
+@Entity
+@Table(name = "ROLE_T")
 public class Role extends Base{
 
+    @Column(name  = "name")
     private String name;
 
     public Role(){}

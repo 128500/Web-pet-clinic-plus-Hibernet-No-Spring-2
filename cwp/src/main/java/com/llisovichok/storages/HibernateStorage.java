@@ -3,6 +3,7 @@ package com.llisovichok.storages;
 import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.lessons.clinic.PetPhoto;
 import com.llisovichok.models.Message;
+import com.llisovichok.models.Role;
 import com.llisovichok.models.User;
 
 import org.hibernate.*;
@@ -24,23 +25,34 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HibernateStorage implements HiberStorage {
 
     private static HibernateStorage INSTANCE;
-    private static SessionFactory factory;
+    private static SessionFactory sessionFactory;
 
     static {
         try {
+            /**sessionFactory = new AnnotationConfiguration().configure().
+                    addPackage("com.llisovichok.models").
+                    addAnnotatedClass(User.class).
+                    addAnnotatedClass(Role.class).
+                    addAnnotatedClass(Message.class).
+                    addPackage("com.llisovichok.lessons.clinic").
+                    addAnnotatedClass(Pet.class).
+                    addAnnotatedClass(PetPhoto.class).
+                    buildSessionFactory();*/
+
             StandardServiceRegistry standardRegistry =
                     new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
             Metadata metaData =
                     new MetadataSources(standardRegistry).getMetadataBuilder().build();
-            factory = metaData.getSessionFactoryBuilder().build();
+            sessionFactory = metaData.getSessionFactoryBuilder().build();
+
         } catch (Throwable th) {
             System.err.println("Initial SessionFactory creation failed" + th);
             throw new ExceptionInInitializerError(th);
         }
     }
 
-    public static SessionFactory getFactory() {
-        return factory;
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
     public static HibernateStorage getInstance() {
@@ -72,7 +84,7 @@ public class HibernateStorage implements HiberStorage {
     private <T> T transaction(Command<T> command) {
         Transaction tx = null;
         T genericType;
-        try (Session session = factory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
             genericType = command.execute(session);
             tx.commit();
