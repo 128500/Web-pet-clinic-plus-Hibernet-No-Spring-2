@@ -1,6 +1,7 @@
 package com.llisovichok.storages;
 
 import com.llisovichok.models.User;
+import org.springframework.stereotype.Repository;
 
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
@@ -10,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by ALEKSANDR KUDIN on 12.04.2017.
  */
+
+@Repository
 public class MemoryStorage implements Storage {
 
     private AtomicInteger ids = new AtomicInteger();

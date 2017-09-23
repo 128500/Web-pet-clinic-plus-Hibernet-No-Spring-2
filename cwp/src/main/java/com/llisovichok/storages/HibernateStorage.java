@@ -10,6 +10,7 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.springframework.stereotype.Repository;
 
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -21,6 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class contains methods (CRUD) to interact with the
  * database via Hibernate framework
  */
+
+@Repository
 public class HibernateStorage implements HiberStorage {
 
     private static HibernateStorage INSTANCE;

@@ -3,6 +3,7 @@ package com.llisovichok.storages;
 import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.models.User;
 import com.llisovichok.service.Settings;
+import org.springframework.stereotype.Repository;
 
 import java.io.ByteArrayInputStream;
 import java.sql.*;
@@ -15,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * TODO rewrite method addUser (change it to 'returning boolean')
  * Created by ALEKSANDR KUDIN on 12.04.2017.
  */
+
+@Repository
 public class JdbcStorage implements Storage {
 
     private final static JdbcStorage INSTANCE = new JdbcStorage();
