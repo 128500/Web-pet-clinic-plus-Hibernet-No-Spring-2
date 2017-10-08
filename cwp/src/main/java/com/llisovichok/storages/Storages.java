@@ -13,13 +13,16 @@ public class Storages {
 
     public final JdbcStorage jdbcStorage;
 
-    public final HibernateStorage hibernateStorage;
+    //public final HibernateStorage hibernateStorage;
+
+    public final SHHibernateStorage shHibernateStorage;
 
 
     @Autowired
-    public Storages(final MemoryStorage memoryStorage, final JdbcStorage jdbcStorage, final HibernateStorage hibernateStorage){
+    public Storages(final MemoryStorage memoryStorage, final JdbcStorage jdbcStorage, final SHHibernateStorage shHibernateStorage){
         this.memoryStorage = memoryStorage;
         this.jdbcStorage = jdbcStorage;
-        this.hibernateStorage = hibernateStorage;
+        //this.hibernateStorage = hibernateStorage;
+        this.shHibernateStorage = shHibernateStorage;
     }
 }
