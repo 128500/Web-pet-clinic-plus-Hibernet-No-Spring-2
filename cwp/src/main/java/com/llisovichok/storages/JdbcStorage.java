@@ -23,7 +23,7 @@ public class JdbcStorage implements Storage {
     private final static JdbcStorage INSTANCE = new JdbcStorage();
     private Connection connection = null;
 
-    public JdbcStorage() {
+    private JdbcStorage() {
         Settings settings = Settings.getInstance();
         try {
 

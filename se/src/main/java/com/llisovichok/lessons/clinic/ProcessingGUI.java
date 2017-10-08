@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.io.*;
 
-import static java.util.Collections.EMPTY_LIST;
-
 /**
  * This class manipulates with the data or
  * actions that the user adds/performs
@@ -21,16 +19,15 @@ public class ProcessingGUI {
         this.clinic = new Clinic();
     }
 
-    public Clinic getClinic() {
+    protected Clinic getClinic() {
         return this.clinic;
     }
 
      /**
      * Creates a new client
-     * @return new client created by user
      * @throws UserException
      */
-    public void addClient(String clientName, String petName, String petKind) throws UserException {
+    protected void addClient(String clientName, String petName, String petKind) throws UserException {
 
         clientName = clientName.trim();
         petName = petName.trim();
@@ -53,7 +50,7 @@ public class ProcessingGUI {
      * Creates a new pet (dog, cat, or hamster)
      * @return new Pet created by user
      */
-    public Pet createPet(final String petName, final String petKind) {
+    protected Pet createPet(final String petName, final String petKind) {
 
         Pet p;
         if (petKind.equals("собака") || petKind.equals("dog")) {
@@ -71,17 +68,17 @@ public class ProcessingGUI {
      * Changes the name of the client according to user input
      * @throws UserException
      */
-    public void changeClientNameByUser(final String oldName, final String newName) throws UserException {
+    protected void changeClientNameByUser(final String oldName, final String newName) throws UserException {
         clinic.resetClientName(oldName, newName);
     }
 
     /**
      * Changes the name of the pet according to user input
-     * @param oldName
-     * @param newName
+     * @param oldName the name that must be replaced
+     * @param newName new name to put
      * @throws UserException
      */
-    public void changePetNameByUser(final String oldName, final String newName) throws UserException {
+    protected void changePetNameByUser(final String oldName, final String newName) throws UserException {
         clinic.resetPetName(oldName, newName);
     }
 
@@ -89,7 +86,7 @@ public class ProcessingGUI {
      * Finds the client by the pet's name
      * @throws UserException
      */
-    public void findClientByUser(final String petName) throws UserException {
+    protected void findClientByUser(final String petName) throws UserException {
         new ClinicMessageWindow(clinic.findClientByPetName(petName).toString(),1);
     }
 
@@ -98,7 +95,7 @@ public class ProcessingGUI {
      *
      * @throws UserException
      */
-    public void findPetByUser(final String clientName) throws UserException {
+    protected void findPetByUser(final String clientName) throws UserException {
         new ClinicMessageWindow(clinic.findPetByClientName(clientName).toString(), 1);
     }
 
@@ -107,7 +104,7 @@ public class ProcessingGUI {
      * @param clientName the name of the client
      * @throws UserException
      */
-    public void removeClient(final String clientName) throws UserException{
+    protected void removeClient(final String clientName) throws UserException{
         clinic.removeClient(clientName);
         clinic.setClientsCount(clinic.getClientsCount()-1);
         new ClinicMessageWindow("\n Теперь в списке " + (clinic.getClientsCount()) + " клиентов.", 1);
@@ -117,7 +114,7 @@ public class ProcessingGUI {
      * @param petName the name of the pet
      * @throws UserException
      */
-    public void removePet(final String petName)throws UserException{
+    protected void removePet(final String petName)throws UserException{
        clinic.removePet(petName);
     }
 
@@ -127,7 +124,7 @@ public class ProcessingGUI {
      * @param clients current clients' list
      * @return sorted list of the clients
      */
-    public ArrayList<Client> showAllClientsWithPets(final ArrayList<Client> clients) {
+    protected ArrayList<Client> showAllClientsWithPets(final ArrayList<Client> clients) {
 
         ArrayList<String> sortedClientsNames = getAllClientsNames(clients);
         ArrayList<Client> sortedClientsList = new ArrayList<Client>();
@@ -146,12 +143,12 @@ public class ProcessingGUI {
      * @param clients current clients' list
      * @return sorted list of the clients' names
      */
-    public ArrayList<String> getAllClientsNames(final ArrayList<Client> clients) {
+    protected ArrayList<String> getAllClientsNames(final ArrayList<Client> clients) {
         ArrayList<String> clientsNames = new ArrayList<String>();
         ArrayList<String> clientsSortedNames = new ArrayList<String>();
         if (clients.isEmpty()) {
             new ClinicMessageWindow("В списке нет клиентов!", 3);
-            clientsNames = new ArrayList<String>(EMPTY_LIST);
+            clientsNames = new ArrayList<String>();
         } else {
             for (Client c : clients) {
                 clientsSortedNames.add(c.getFirstName().toLowerCase());
@@ -174,12 +171,12 @@ public class ProcessingGUI {
      * @param clients current clients' list
      * @return sorted list of the pets' names
      */
-    public ArrayList<String> getAllPetsNames(ArrayList<Client> clients) {
+    protected ArrayList<String> getAllPetsNames(ArrayList<Client> clients) {
         ArrayList<String> petsNames = new ArrayList<String>();
         ArrayList<String> petsSortedNames = new ArrayList<String>();
         if (clients.isEmpty()) {
             new ClinicMessageWindow("В списке нет клиентов!", 3);
-            petsNames = new ArrayList<String>(EMPTY_LIST);
+            petsNames = new ArrayList<String>();
         } else {
             for (Client c : clients) {
                 petsSortedNames.add(c.getPet().getName().toLowerCase());
@@ -203,7 +200,7 @@ public class ProcessingGUI {
      * @param clients current clients' list
      * @return sorted list of the clients
      */
-    public ArrayList<Pet> getAllSortedByNamePets(ArrayList<Client> clients) throws UserException{
+    protected ArrayList<Pet> getAllSortedByNamePets(ArrayList<Client> clients) throws UserException{
 
         ArrayList<Pet> pets = new ArrayList<Pet>();
         ArrayList<String> petNames = getAllPetsNames(clients);
@@ -222,7 +219,7 @@ public class ProcessingGUI {
      * Saves current configuration of the clients' list
      * @param clinic clinic
      */
-    public void saveCurrentConfiguration(Clinic clinic){
+    protected void saveCurrentConfiguration(Clinic clinic){
 
        try{
            FileOutputStream fos = new FileOutputStream("Clinic.ser");
