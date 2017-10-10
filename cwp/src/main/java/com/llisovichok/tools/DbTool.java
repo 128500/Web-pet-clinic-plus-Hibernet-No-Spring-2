@@ -28,8 +28,8 @@ public class DbTool {
         int idJdbc = storages.jdbcStorage.addUser(user);
         user.setId(1);
         storages.memoryStorage.addUser(user);
-        int hiberNumber = storages.shHibernateStorage.addUser(user);
-        ArrayList<User> users = (ArrayList<User>)storages.shHibernateStorage.values();
+        int hiberNumber = storages.shHiberStorage.addUser(user);
+        ArrayList<User> users = (ArrayList<User>)storages.shHiberStorage.values();
 
         System.out.println(users.iterator().next().toString());
         System.out.println(storages.jdbcStorage.getUser(idJdbc).toString());

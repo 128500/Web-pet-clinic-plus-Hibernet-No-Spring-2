@@ -1,63 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-        <beans xmlns="http://www.springframework.org/schema/beans"
-
+<beans xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-
         xmlns:context="http://www.springframework.org/schema/context"
-
         xmlns:aop="http://www.springframework.org/schema/aop"
-
         xmlns:tx="http://www.springframework.org/schema/tx"
-
         xmlns:p="http://www.springframework.org/schema/p"
-
         xsi:schemaLocation="
-
         http://www.springframework.org/schema/context
-
         http://www.springframework.org/schema/context/spring-context-4.0.xsd
-
         http://www.springframework.org/schema/beans
-
         http://www.springframework.org/schema/beans/spring-beans.xsd
-
         http://www.springframework.org/schema/tx
-
         http://www.springframework.org/schema/tx/spring-tx.xsd
-
         http://www.springframework.org/schema/aop
-
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <!--bean id="fileEventType" class="com.devdaily.springtest1.bean.FileEventType">
-        <property name="eventType" value="10"/>
-        <property name="description" value="A sample description here"/>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="configLocations" value="classpath:hibernate.cfg.xml"/>
     </bean>
 
-    <bean id="fileEventDao" class="com.devdaily.springtest1.dao.FileEventDao">
-        <property name="dataSource" ref="basicDataSource"/>
-    </bean>
-
-    <bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost/my_database" />
-        <property name="username" value="my_username" />
-        <property name="password" value="my_password" />
-        <property name="initialSize" value="3" />
-        <property name="maxActive" value="10" />
-    </bean-->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="configLocations">
-            <value>classpath:hibernate.cfg.xml</value>
-        </property>
-    </bean>
-
-    <bean class="org.springframework.orm.hibernate4.HibernateTemplate">
+    <bean class="org.springframework.orm.hibernate5.HibernateTemplate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean name="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+    <bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 

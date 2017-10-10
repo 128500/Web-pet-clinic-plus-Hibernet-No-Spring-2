@@ -2,7 +2,7 @@ package com.llisovichok.storages;
 
 import com.llisovichok.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,16 +15,18 @@ import java.util.List;
  */
 
 @Repository
+
 public class SHHibernateStorage implements SHHiberStorage {
 
     public final HibernateTemplate template;
 
     @Autowired
-    SHHibernateStorage(HibernateTemplate template){
+    public SHHibernateStorage(HibernateTemplate template){
         this.template = template;
     }
 
 
+    @Transactional
     @Override
     public Collection<User> values() {
         return (List<User>) this.template.find("FROM com.llisovichok.models.User u JOIN FETCH u.pet JOIN FETCH u.role ORDER BY u.id");
