@@ -3,7 +3,6 @@ package com.llisovichok.tools;
 import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.models.Role;
 import com.llisovichok.models.User;
-import com.llisovichok.storages.SHHibernateStorage;
 import com.llisovichok.storages.Storages;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -34,5 +33,21 @@ public class DbTool {
         System.out.println(users.iterator().next().toString());
         System.out.println(storages.jdbcStorage.getUser(idJdbc).toString());
         System.out.println(storages.memoryStorage.getUser(1).toString());
+
+        User changedUser = new User("Danni",
+                "Groover",
+                "Princess Diana st., 19",
+                582369258410L,
+                new Pet("Fuco", "dog", 5));
+        changedUser.setRole(new Role("admin"));
+
+        storages.shHiberStorage.editUser(hiberNumber, changedUser);
+        users = (ArrayList<User>)storages.shHiberStorage.values();
+        System.out.println(users.iterator().next().toString());
+
+        User u = storages.shHiberStorage.getUser(hiberNumber);
+        System.out.println(u.toString());
+
+        storages.shHiberStorage.removeUser(hiberNumber);
     }
 }
