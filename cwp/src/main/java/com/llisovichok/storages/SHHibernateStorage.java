@@ -1,5 +1,8 @@
 package com.llisovichok.storages;
 
+import com.llisovichok.lessons.clinic.Pet;
+import com.llisovichok.lessons.clinic.PetPhoto;
+import com.llisovichok.models.Message;
 import com.llisovichok.models.User;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by KUDIN ALEKSANDR on 08.10.2017.
@@ -76,23 +81,61 @@ public class SHHibernateStorage implements SHHiberStorage {
         if(user != null) this.template.delete(user);
     }
 
-    @Override
-    public void addUser(Integer id, User user) {
-
-    }
-
-    @Override
-    public void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize) {
-
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<User> findUsers(String input, boolean lookInFirstName, boolean lookInLastName, boolean lookInPetName) {
-        return null;
+        return (List<User>) this.template.find("FROM com.llisovichok.models.User user " +
+                "JOIN FETCH user.pet JOIN FETCH user.role " +
+                "WHERE lower(user.firstName) like ? " +
+                "OR lower(user.lastName) like ? " +
+                "OR lower(user.pet.name) like ? " +
+                "OR lower(user.address) like ? " +
+                "ORDER BY user.id ASC",
+                lookInFirstName ? "%" + input.toLowerCase() + "%" : "",
+                lookInLastName ? "%" + input.toLowerCase() + "%" : "",
+                lookInPetName ? "%" + input.toLowerCase() + "%" : "",
+                !lookInFirstName && !lookInLastName && !lookInPetName ? "%" + input.toLowerCase() + "%" : "");
+    }
+
+    @Transactional
+    @Override
+    public boolean addPhotoWithHibernate(Integer petId, byte[] photoBytes) {
+        boolean result = false;
+        try {
+            Pet pet = getPetById(petId);
+            PetPhoto petPhoto = new PetPhoto(photoBytes);
+            petPhoto.setPet(pet);
+            pet.setPhoto(petPhoto);
+            this.template.saveOrUpdate(pet);
+            result = true;
+        }  catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
-    public void close() {
-
+    public Pet getPetById(Integer petId) {
+        return (Pet)this.template.findByNamedParam("from Pet p " +
+                "left join fetch p.photo where p.id = :id", "id", petId).
+                iterator().next();
     }
+
+    @Transactional
+    @Override
+    public void addMessage(Integer id, String messageText) {
+        Message message = new Message(messageText);
+
+        User user = this.template.load(User.class, id);
+        message.setUser(user);
+        if (user.getMessages() != null) {
+            user.getMessages().add(message);
+        } else {
+            Set<Message> messages = new HashSet<Message>();
+            messages.add(message);
+            user.setMessages(messages);
+        }
+        this.template.saveOrUpdate(user);
+    }
+
 }

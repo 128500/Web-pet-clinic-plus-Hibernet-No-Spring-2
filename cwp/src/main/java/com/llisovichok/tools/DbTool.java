@@ -7,6 +7,10 @@ import com.llisovichok.storages.Storages;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -48,6 +52,41 @@ public class DbTool {
         User u = storages.shHiberStorage.getUser(hiberNumber);
         System.out.println(u.toString());
 
+        byte[] photoBytes = getImageBytes("http://www.avajava.com/images/avajavalogo.jpg");
+        boolean resultOfAddingPetPhoto = storages.shHiberStorage.addPhotoWithHibernate(u.getPet().getId(), photoBytes);
+        System.out.println("Saving photo: " + resultOfAddingPetPhoto);
+
+        storages.shHiberStorage.addMessage(u.getId(), "First message");
+
         storages.shHiberStorage.removeUser(hiberNumber);
+    }
+
+    private static byte[] getImageBytes(final String urlPath){
+        InputStream is = null;
+        try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            URL url = new URL(urlPath);
+            is  = url.openStream();
+            byte[] data = new byte[1024];
+            int nRead = 0;
+
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                baos.write(data, 0, nRead);
+            }
+
+            baos.flush();
+            int byteArraySize = baos.size();
+
+            return baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try{
+                if(is != null) is.close();
+            } catch (IOException ex){
+                ex.printStackTrace();
+            }
+        }
+        throw new IllegalStateException("Couldn't  get image bytes");
     }
 }

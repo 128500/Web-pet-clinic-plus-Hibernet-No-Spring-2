@@ -21,11 +21,5 @@ public interface SHStorages <T> {
 
     void removeUser(Integer userId);
 
-    void addUser(Integer id, T user);
-
-    void addPhoto(Integer userId, ByteArrayInputStream photoBytes, int streamSize);
-
     Collection<T> findUsers(String input, boolean lookInFirstName, boolean lookInLastName, boolean lookInPetName);
-
-    void close();
 }
