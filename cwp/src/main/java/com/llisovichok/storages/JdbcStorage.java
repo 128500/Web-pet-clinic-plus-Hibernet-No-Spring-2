@@ -18,14 +18,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by ALEKSANDR KUDIN on 12.04.2017.
  */
 
-@Repository
+
 public class JdbcStorage implements Storage {
 
     private final static JdbcStorage INSTANCE = new JdbcStorage();
     private Connection connection = null;
 
-    @Autowired
-    public JdbcStorage() {
+
+    private JdbcStorage() {
         Settings settings = Settings.getInstance();
         try {
 
