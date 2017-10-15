@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class JdbcStorage implements Storage {
 
-    private final static JdbcStorage INSTANCE = new JdbcStorage();
+    //private final static JdbcStorage INSTANCE = new JdbcStorage();
     private Connection connection = null;
 
     @Autowired
@@ -40,9 +40,9 @@ public class JdbcStorage implements Storage {
     }
 
 
-    public static JdbcStorage getINSTANCE() {
-        return INSTANCE;
-    }
+    //public static JdbcStorage getINSTANCE() {
+      //  return INSTANCE;
+    //}
 
 
     private User createUser(final ResultSet rs){
