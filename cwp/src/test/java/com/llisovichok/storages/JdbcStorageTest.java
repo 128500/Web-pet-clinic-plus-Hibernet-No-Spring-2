@@ -22,10 +22,7 @@ import static org.junit.Assert.assertTrue;
 @Ignore
 public class JdbcStorageTest extends Mockito {
 
-    //final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
-    private final ApplicationContext context = new ClassPathXmlApplicationContext("spring-context.xml");
-    private final Storages storages = context.getBean(Storages.class);
-    private JdbcStorage JDBC_STORAGE = storages.jdbcStorage;
+    final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
 
     Connection con = null;
 
