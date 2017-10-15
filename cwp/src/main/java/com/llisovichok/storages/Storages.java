@@ -19,7 +19,7 @@ public class Storages {
 
 
     @Autowired
-    public Storages(final MemoryStorage memoryStorage, final JdbcStorage jdbcStorage, final SHHiberStorage shHiberStorage){
+    public Storages(final MemoryStorage memoryStorage, final SHHiberStorage shHiberStorage){
         this.memoryStorage = memoryStorage;
         //this.jdbcStorage = jdbcStorage;
         //this.hibernateStorage = hibernateStorage;

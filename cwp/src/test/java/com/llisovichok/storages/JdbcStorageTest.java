@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 public class JdbcStorageTest extends Mockito {
 
     final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
-
     Connection con = null;
 
     private Connection setConnection() {
