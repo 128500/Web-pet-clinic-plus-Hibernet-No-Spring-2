@@ -6,6 +6,8 @@ import com.llisovichok.service.Settings;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.sql.*;
 import java.util.Collection;
@@ -20,7 +22,10 @@ import static org.junit.Assert.assertTrue;
 @Ignore
 public class JdbcStorageTest extends Mockito {
 
-    final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    //final static JdbcStorage JDBC_STORAGE = JdbcStorage.getINSTANCE();
+    private final ApplicationContext context = new ClassPathXmlApplicationContext("spring-context.xml");
+    private final Storages storages = context.getBean(Storages.class);
+    private JdbcStorage JDBC_STORAGE = storages.jdbcStorage;
 
     Connection con = null;
 

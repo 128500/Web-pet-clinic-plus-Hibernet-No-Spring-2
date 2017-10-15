@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class Storages {
     public final MemoryStorage memoryStorage;
 
-    public final JdbcStorage jdbcStorage;
+    //public final JdbcStorage jdbcStorage;
 
     //public final HibernateStorage hibernateStorage;
 
@@ -21,7 +21,7 @@ public class Storages {
     @Autowired
     public Storages(final MemoryStorage memoryStorage, final JdbcStorage jdbcStorage, final SHHiberStorage shHiberStorage){
         this.memoryStorage = memoryStorage;
-        this.jdbcStorage = jdbcStorage;
+        //this.jdbcStorage = jdbcStorage;
         //this.hibernateStorage = hibernateStorage;
         this.shHiberStorage = shHiberStorage;
     }

@@ -3,6 +3,7 @@ package com.llisovichok.storages;
 import com.llisovichok.lessons.clinic.Pet;
 import com.llisovichok.models.User;
 import com.llisovichok.service.Settings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.ByteArrayInputStream;
@@ -20,10 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class JdbcStorage implements Storage {
 
-    private final static JdbcStorage INSTANCE = new JdbcStorage();
+    //private final static JdbcStorage INSTANCE = new JdbcStorage();
     private Connection connection = null;
 
-    private JdbcStorage() {
+    @Autowired
+    public JdbcStorage() {
         Settings settings = Settings.getInstance();
         try {
 
@@ -38,9 +40,9 @@ public class JdbcStorage implements Storage {
     }
 
 
-    public static JdbcStorage getINSTANCE() {
-        return INSTANCE;
-    }
+    //public static JdbcStorage getINSTANCE() {
+      //  return INSTANCE;
+    //}
 
 
     private User createUser(final ResultSet rs){
